@@ -12,6 +12,7 @@ import 'package:drawo_app/data/models/drawing_model.dart';
 import 'package:drawo_app/presentation/painter/bloc/painter_bloc.dart';
 import 'package:drawo_app/presentation/gallery/widgets/frosted_glass_container.dart';
 import 'package:drawo_app/presentation/gallery/widgets/main_background.dart';
+import 'package:drawo_app/core/languages/app_localizations.dart';
 
 class PainterScreen extends StatelessWidget {
   final DrawingModel? drawing;
@@ -187,9 +188,30 @@ class _PainterViewState extends State<_PainterView> {
                   Expanded(
                     child: Stack(
                       children: [
-                        RepaintBoundary(
-                          key: _canvasKey,
-                          child: const _DrawingCanvas(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 140),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: RepaintBoundary(
+                                key: _canvasKey,
+                                child: Container(
+                                  color: Colors.white,
+                                  child: const _DrawingCanvas(),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                         _buildToolbar(context, state),
                         if (state.status == PainterStatus.saving)
@@ -214,6 +236,7 @@ class _PainterViewState extends State<_PainterView> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       height: 102,
       child: FrostedGlassContainer(
@@ -230,7 +253,7 @@ class _PainterViewState extends State<_PainterView> {
                   child: Image.asset(MediaAssets.backIcon, height: 24),
                 ),
                 Text(
-                  widget.drawing != null ? 'Edit Drawing' : 'New Drawing',
+                  widget.drawing != null ? l10n.edit : l10n.newImage,
                   style: const TextStyle(
                     color: Palette.white,
                     fontSize: 18,
