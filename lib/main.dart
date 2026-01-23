@@ -7,15 +7,15 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   service_locator.call();
   await Firebase.initializeApp();
-  DevicePreview(
-    enabled: true,
-    builder: (context) {
-      return const DrawingApp();
-    },
-  );
+  // DevicePreview(
+  //   enabled: true,
+  //   builder: (context) {
+  //     return const DrawingApp();
+  //   },
+  // );
   runApp(const DrawingApp());
 }
 

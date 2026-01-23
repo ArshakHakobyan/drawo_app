@@ -1,6 +1,7 @@
 import 'package:drawo_app/presentation/auth/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/core/style/text_styles.dart';
 import 'package:drawo_app/core/common/app_enums.dart';
@@ -30,15 +31,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     final localeStrings = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage ?? 'Login failed')),
+            Fluttertoast.showToast(
+              msg: state.error.toMessage(context),
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Palette.red.withOpacity(0.8),
+              textColor: Palette.white,
+              fontSize: 14.0,
             );
           }
           // Navigation to Gallery is handled in drawing_app.dart via BlocBuilder
@@ -59,107 +64,131 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 ),
-                child: SingleChildScrollView(
-                  child: ReactiveForm(
-                    formGroup: _loginForm.formGroup,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: screenSize.height / 5),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              localeStrings.loginTitle,
-                              style: AppTypography.h6.copyWith(
-                                color: Palette.whiter,
-                                fontFamily: "PressStart2P",
-                                shadows: [
-                                  const Shadow(
-                                    color: Palette.primary,
-                                    blurRadius: 28,
-                                    offset: Offset(0, 0),
-                                  ),
-                                  const Shadow(
-                                    color: Palette.primary,
-                                    blurRadius: 28 * 0.66,
-                                    offset: Offset(0, 0),
-                                  ),
-                                  const Shadow(
-                                    color: Palette.primary,
-                                    blurRadius: 28 * 0.33,
-                                    offset: Offset(0, 0),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            GlassTextInput(
-                              formControl: _loginForm.emailControl,
-                              hint: localeStrings.email,
-                              requiredMessage: localeStrings.emailrequired,
-                              fillColor: Palette.black,
-                              obscureText: false,
-                              context: context,
-                              keyboardType: TextInputType.emailAddress,
-                              textInputAction: TextInputAction.next,
-                            ),
-                            const SizedBox(height: 20),
-                            GlassTextInput(
-                              context: context,
-                              formControl: _loginForm.passwordControl,
-                              hint: localeStrings.password,
-                              requiredMessage: localeStrings.passwordrequired,
-                              fillColor: Palette.black,
-                              obscureText: true,
-                              keyboardType: TextInputType.visiblePassword,
-                              textInputAction: TextInputAction.done,
-                            ),
-                          ],
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
                         ),
-                        SizedBox(height: screenSize.height / 9),
-                        Column(
-                          children: [
-                            AccentButton(
-                              label: localeStrings.login,
-                              onPressed: isLoading
-                                  ? null
-                                  : () {
-                                      if (_loginForm.validate()) {
-                                        context.read<AuthBloc>().add(
-                                          AuthSignInRequested(
-                                            _loginForm.emailControl.value!,
-                                            _loginForm.passwordControl.value!,
+                        child: IntrinsicHeight(
+                          child: ReactiveForm(
+                            formGroup: _loginForm.formGroup,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Spacer(flex: 2),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      localeStrings.loginTitle,
+                                      style: AppTypography.h6.copyWith(
+                                        color: Palette.whiter,
+                                        fontFamily: "PressStart2P",
+                                        shadows: [
+                                          const Shadow(
+                                            color: Palette.primary,
+                                            blurRadius: 28,
+                                            offset: Offset(0, 0),
+                                          ),
+                                          const Shadow(
+                                            color: Palette.primary,
+                                            blurRadius: 28 * 0.66,
+                                            offset: Offset(0, 0),
+                                          ),
+                                          const Shadow(
+                                            color: Palette.primary,
+                                            blurRadius: 28 * 0.33,
+                                            offset: Offset(0, 0),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    GlassTextInput(
+                                      formControl: _loginForm.emailControl,
+                                      label: localeStrings.email,
+                                      hint: localeStrings.enterEmail,
+                                      requiredMessage:
+                                          localeStrings.emailrequired,
+                                      fillColor: Palette.black,
+                                      obscureText: false,
+                                      context: context,
+                                      keyboardType: TextInputType.emailAddress,
+                                      textInputAction: TextInputAction.next,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    GlassTextInput(
+                                      context: context,
+                                      formControl: _loginForm.passwordControl,
+                                      label: localeStrings.confirmPassword,
+                                      hint: localeStrings.enterPassword,
+                                      requiredMessage:
+                                          localeStrings.passwordrequired,
+                                      fillColor: Palette.black,
+                                      obscureText: true,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
+                                      textInputAction: TextInputAction.done,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+                                const Spacer(),
+                                Column(
+                                  children: [
+                                    AccentButton(
+                                      label: localeStrings.login,
+                                      onPressed: isLoading
+                                          ? null
+                                          : () {
+                                              if (_loginForm.validate()) {
+                                                context.read<AuthBloc>().add(
+                                                  AuthSignInRequested(
+                                                    _loginForm
+                                                        .emailControl
+                                                        .value!,
+                                                    _loginForm
+                                                        .passwordControl
+                                                        .value!,
+                                                  ),
+                                                );
+                                              } else {
+                                                _loginForm.formGroup
+                                                    .markAllAsTouched();
+                                              }
+                                            },
+                                      variant: AppButtonVariant.primaryGradient,
+                                      showLoading: isLoading,
+                                      loadingColor: Palette.whiter,
+                                    ),
+                                    const SizedBox(height: 19),
+                                    AccentButton(
+                                      label: localeStrings.registration,
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const RegistrationScreen(),
                                           ),
                                         );
-                                      } else {
-                                        _loginForm.formGroup.markAllAsTouched();
-                                      }
-                                    },
-                              variant: AppButtonVariant.primaryGradient,
-                              showLoading: isLoading,
-                              loadingColor: Palette.whiter,
+                                      },
+                                      variant: AppButtonVariant.primaryLight,
+                                      showLoading: false,
+                                      loadingColor: Palette.primary,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 40),
+                              ],
                             ),
-                            const SizedBox(height: 19),
-                            AccentButton(
-                              label: localeStrings.registration,
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const RegistrationScreen(),
-                                  ),
-                                );
-                              },
-                              variant: AppButtonVariant.primaryLight,
-                              showLoading: false,
-                              loadingColor: Palette.primary,
-                            ),
-                          ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

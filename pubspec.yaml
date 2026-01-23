@@ -90,6 +90,7 @@ flutter_native_splash:
   image: assets/splash_screen.png
   ios: true
   ios_content_mode: scaleAspectFill
+  fullscreen: true 
 
 flutter:
 

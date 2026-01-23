@@ -44,7 +44,7 @@ class DrawingApp extends StatelessWidget {
               builder: (context, authState) {
                 if (authState.status == AuthStatus.authenticated) {
                   return const GalleryScreen();
-                } else if (authState.status == AuthStatus.loading) {
+                } else if (authState.status == AuthStatus.initial) {
                   return const Scaffold(
                     body: Center(child: CircularProgressIndicator()),
                   );
