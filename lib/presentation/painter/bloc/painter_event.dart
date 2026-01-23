@@ -43,5 +43,23 @@ class SetBackgroundImage extends PainterEvent {
 class SaveImageRequested extends PainterEvent {
   final Uint8List imageBytes;
   final String? title;
-  const SaveImageRequested(this.imageBytes, {this.title});
+  final String? existingDocId;
+  final String? oldStoragePath;
+  final int? width;
+  final int? height;
+
+  const SaveImageRequested({
+    required this.imageBytes,
+    this.title,
+    this.existingDocId,
+    this.oldStoragePath,
+    this.width,
+    this.height,
+  });
+}
+
+class DeleteImageRequested extends PainterEvent {
+  final String docId;
+  final String storagePath;
+  const DeleteImageRequested(this.docId, this.storagePath);
 }

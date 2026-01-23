@@ -26,7 +26,7 @@ class DrawnLine extends Equatable {
   }
 }
 
-enum PainterStatus { initial, drawing, saving, saved, error }
+enum PainterStatus { initial, drawing, saving, saved, deleted, error }
 
 class PainterState extends Equatable {
   final List<DrawnLine> lines;

@@ -1,6 +1,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:drawo_app/drawing_app.dart';
 import 'package:drawo_app/core/service_locator.dart' as service_locator;
+import 'package:drawo_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   service_locator.call();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // DevicePreview(
   //   enabled: true,
   //   builder: (context) {

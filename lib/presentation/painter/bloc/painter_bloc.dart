@@ -24,6 +24,7 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
     on<ClearCanvas>(_onClearCanvas);
     on<SetBackgroundImage>(_onSetBackgroundImage);
     on<SaveImageRequested>(_onSaveImageRequested);
+    on<DeleteImageRequested>(_onDeleteImageRequested);
   }
 
   void _onStartDrawing(StartDrawing event, Emitter<PainterState> emit) {
@@ -88,17 +89,53 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
   ) async {
     emit(state.copyWith(status: PainterStatus.saving));
     try {
-      await _imageRepository.uploadImage(
-        bytes: event.imageBytes,
-        title: event.title,
-      );
+      if (event.existingDocId != null && event.oldStoragePath != null) {
+        await _imageRepository.updateExistingImage(
+          docId: event.existingDocId!,
+          bytes: event.imageBytes,
+          oldStoragePath: event.oldStoragePath!,
+          title: event.title,
+          width: event.width,
+          height: event.height,
+        );
 
-      await showNotification(
-        'Image Saved',
-        'Your drawing has been successfully saved to Firebase.',
-      );
+        await showNotification(
+          'Image Updated',
+          'The artwork has been successfully updated.',
+        );
+      } else {
+        await _imageRepository.uploadImage(
+          bytes: event.imageBytes,
+          title: event.title,
+          width: event.width,
+          height: event.height,
+        );
+
+        await showNotification(
+          'Image Saved',
+          'Your drawing has been successfully saved to Firebase.',
+        );
+      }
 
       emit(state.copyWith(status: PainterStatus.saved));
+    } catch (e) {
+      emit(
+        state.copyWith(status: PainterStatus.error, errorMessage: e.toString()),
+      );
+    }
+  }
+
+  Future<void> _onDeleteImageRequested(
+    DeleteImageRequested event,
+    Emitter<PainterState> emit,
+  ) async {
+    emit(state.copyWith(status: PainterStatus.saving));
+    try {
+      await _imageRepository.deleteImage(event.docId, event.storagePath);
+
+      await showNotification('Image Deleted', 'The artwork has been removed.');
+
+      emit(state.copyWith(status: PainterStatus.deleted));
     } catch (e) {
       emit(
         state.copyWith(status: PainterStatus.error, errorMessage: e.toString()),

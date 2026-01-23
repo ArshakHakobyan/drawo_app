@@ -1,14 +1,25 @@
 class MediaAssets {
   static const _dir = 'assets';
-  static const backgroundimage = '$_dir/images/background_img.png';
-  static const pattern = '$_dir/icons/pattern.png';
-  static const back = '$_dir/icons/back_icon.png';
-  static const exit = '$_dir/icons/exit_icon.png';
-  static const done = '$_dir/icons/done_icon.png';
-  static const createnew = '$_dir/icons/ic_add.png';
-  static const share = '$_dir/icons/share_icon.png';
-  static const picker = '$_dir/icons/picker_icon.png';
-  static const pan = '$_dir/icons/pan_icon.png';
-  static const gallery = '$_dir/icons/gallery_icon.png';
-  static const eraiser = '$_dir/icons/eraser_icon.png';
+  static const _icons = '$_dir/icons';
+  static const _images = '$_dir/images';
+
+  // Images
+  static const backgroundImage = '$_images/background_img.png';
+  
+  // Icons & Patterns
+  static const pattern = '$_icons/pattern.png';
+  static const appIcon = '$_icons/app_icon.png';
+  
+  // Navigation & Actions
+  static const backIcon = '$_icons/back_icon.png';
+  static const exitIcon = '$_icons/exit_icon.png';
+  static const doneIcon = '$_icons/done_icon.png';
+  static const addIcon = '$_icons/ic_add.png'; // Replaces create_new
+  static const shareIcon = '$_icons/share_icon.png';
+  
+  // Tools
+  static const pickerIcon = '$_icons/picker_icon.png';
+  static const panIcon = '$_icons/pan_icon.png';
+  static const galleryIcon = '$_icons/gallery_icon.png';
+  static const eraserIcon = '$_icons/eraser_icon.png';
 }

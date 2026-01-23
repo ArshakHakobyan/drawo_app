@@ -1,9 +1,12 @@
+import 'package:drawo_app/core/resources/media_assets.dart';
 import 'package:drawo_app/core/routes/app_router.dart';
+import 'package:drawo_app/core/style/palette.dart';
+import 'package:drawo_app/presentation/gallery/bloc/gallery_bloc.dart';
+import 'package:drawo_app/presentation/gallery/widgets/main_background.dart';
+import 'package:drawo_app/presentation/gallery/widgets/artworks_grid.dart';
+import 'package:drawo_app/presentation/gallery/widgets/dashboard_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:drawo_app/presentation/gallery/bloc/gallery_bloc.dart';
-import 'package:drawo_app/presentation/auth/bloc/auth_bloc.dart';
-import 'package:drawo_app/presentation/painter/painter_screen.dart';
 import 'package:drawo_app/core/service_locator.dart' as service_locator;
 import 'package:drawo_app/core/languages/app_localizations.dart';
 
@@ -12,66 +15,100 @@ class GalleryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return BlocProvider(
       create: (context) =>
           service_locator.sl<GalleryBloc>()..add(LoadGallery()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.gallery),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () =>
-                  context.read<AuthBloc>().add(AuthSignOutRequested()),
-            ),
-          ],
-        ),
-        body: BlocBuilder<GalleryBloc, GalleryState>(
-          builder: (context, state) {
-            if (state.status == GalleryStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state.images.isEmpty) {
-              return const Center(child: Text('No images yet. Start drawing!'));
-            }
-            return GridView.builder(
-              padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: state.images.length,
-              itemBuilder: (context, index) {
-                final imageDoc = state.images[index];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigate to painter with this image? Or just view?
-                  },
-                  child: GridTile(
-                    footer: GridTileBar(
-                      backgroundColor: Colors.black54,
-                      title: Text(imageDoc.title ?? 'Untitled'),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.white),
-                        onPressed: () => context.read<GalleryBloc>().add(
-                          DeleteImage(imageDoc),
+      child: const _GalleryDashboardLayout(),
+    );
+  }
+}
+
+class _GalleryDashboardLayout extends StatelessWidget {
+  const _GalleryDashboardLayout();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          const MainBackground(),
+          SafeArea(
+            top: false,
+            child: Column(
+              children: [
+                const DashboardHeader(),
+                const Expanded(child: ArtworksGrid()),
+
+                // Prominent Create Action for Empty State
+                BlocBuilder<GalleryBloc, GalleryState>(
+                  builder: (context, state) {
+                    final shouldShowBigCta =
+                        state.status != GalleryStatus.loading &&
+                        state.images.isEmpty;
+
+                    if (shouldShowBigCta) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 50),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Palette.primary, Palette.secondary],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Palette.primary.withOpacity(0.4),
+                                blurRadius: 16,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 16,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(
+                                context,
+                              ).pushNamed(AppRoutes.painter);
+                            },
+                            icon: Image.asset(
+                              MediaAssets.addIcon,
+                              width: 20,
+                              height: 20,
+                              color: Palette.white,
+                            ),
+                            label: Text(
+                              l10n.create,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: Palette.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    child: Image.network(imageDoc.url, fit: BoxFit.cover),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushNamed(context, AppRoutes.painter),
-          child: const Icon(Icons.add),
-        ),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
