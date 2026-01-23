@@ -86,6 +86,7 @@ class GlassTextInput extends StatelessWidget {
                         height: 1,
                       ),
                     ),
+                    obscuringCharacter: '*',
                     validationMessages: {
                       ValidationMessage.required: (_) =>
                           requiredMessage ?? 'required',

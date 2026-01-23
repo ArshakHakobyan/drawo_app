@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/core/style/text_styles.dart';
 import 'package:drawo_app/core/common/app_enums.dart';
@@ -29,17 +30,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     final localeStrings = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state.status == AuthStatus.error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage ?? 'Registration failed'),
-              ),
+            Fluttertoast.showToast(
+              msg: state.error.toMessage(context),
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Palette.red.withOpacity(0.8),
+              textColor: Palette.white,
+              fontSize: 14.0,
             );
           }
           if (state.status == AuthStatus.authenticated) {
@@ -176,6 +179,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 24),
                                 const Spacer(),
                                 Column(
                                   children: [

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:drawo_app/core/common/app_enums.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:drawo_app/data/services/auth_service.dart';
@@ -50,10 +51,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         email: event.email,
         password: event.password,
       );
+    } on FirebaseAuthException catch (e) {
+      AuthError error = AuthError.unknown;
+      if (e.code == 'user-not-found') {
+        error = AuthError.userNotFound;
+      } else if (e.code == 'wrong-password') {
+        error = AuthError.wrongPassword;
+      } else if (e.code == 'invalid-email') {
+        error = AuthError.invalidEmail;
+      } else if (e.code == 'invalid-credential') {
+        error = AuthError.invalidCredentials;
+      }
+      emit(state.copyWith(status: AuthStatus.error, error: error));
     } catch (e) {
-      emit(
-        state.copyWith(status: AuthStatus.error, errorMessage: e.toString()),
-      );
+      emit(state.copyWith(status: AuthStatus.error, error: AuthError.unknown));
     }
   }
 
@@ -67,10 +78,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         email: event.email,
         password: event.password,
       );
+    } on FirebaseAuthException catch (e) {
+      AuthError error = AuthError.unknown;
+      if (e.code == 'email-already-in-use') {
+        error = AuthError.emailAlreadyInUse;
+      } else if (e.code == 'weak-password') {
+        error = AuthError.weakPassword;
+      } else if (e.code == 'invalid-email') {
+        error = AuthError.invalidEmail;
+      }
+      emit(state.copyWith(status: AuthStatus.error, error: error));
     } catch (e) {
-      emit(
-        state.copyWith(status: AuthStatus.error, errorMessage: e.toString()),
-      );
+      emit(state.copyWith(status: AuthStatus.error, error: AuthError.unknown));
     }
   }
 
