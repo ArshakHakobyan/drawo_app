@@ -53,6 +53,45 @@ class GalleryService {
     return doc.id;
   }
 
+  Future<void> updateExistingImage({
+    required String docId,
+    required Uint8List bytes,
+    required String oldStoragePath,
+    String? title,
+    int? width,
+    int? height,
+  }) async {
+    if (_uid == null) throw Exception('User not authenticated');
+
+    // Delete old image from storage
+    await _storage.ref(oldStoragePath).delete();
+
+    // Upload new image
+    final name = 'img_${DateTime.now().millisecondsSinceEpoch}_rev.png';
+    final storagePath = 'users/$_uid/images/$name';
+
+    final task = await _storage
+        .ref(storagePath)
+        .putData(bytes, SettableMetadata(contentType: 'image/png'));
+    final url = await task.ref.getDownloadURL();
+
+    // Update existing document
+    await _firestore
+        .collection('users')
+        .doc(_uid)
+        .collection('images')
+        .doc(docId)
+        .update({
+          'url': url,
+          'storagePath': storagePath,
+          'title': (title?.trim().isEmpty ?? true) ? null : title,
+          'sizeBytes': bytes.length,
+          'width': width,
+          'height': height,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+  }
+
   Stream<List<DrawingModel>> imagesStream() {
     if (_uid == null) return Stream.value([]);
 

@@ -104,6 +104,12 @@ class AppLocalizations {
   String get entervalidemail => translate('entervalidemail');
   String get passwordshouldmatch => translate('passwordshouldmatch');
   String get mustbeatchars => translate('mustbeatchars');
+  String get imageSaved => translate('imageSaved');
+  String get imageSavedDesc => translate('imageSavedDesc');
+  String get imageUpdated => translate('imageUpdated');
+  String get imageUpdatedDesc => translate('imageUpdatedDesc');
+  String get imageDeleted => translate('imageDeleted');
+  String get imageDeletedDesc => translate('imageDeletedDesc');
 }
 
 class _AppLocalizationsDelegate

@@ -27,5 +27,11 @@
     "namerequired": "Name is required.",
     "entervalidemail": "Please enter a valid email.",
     "passwordshouldmatch": "Passwords should match",
-    "mustbeatchars": "Must be at least 6 chars"
+    "mustbeatchars": "Must be at least 6 chars",
+    "imageSaved": "Image Saved",
+    "imageSavedDesc": "Your drawing has been successfully saved to Firebase.",
+    "imageUpdated": "Image Updated",
+    "imageUpdatedDesc": "The artwork has been successfully updated.",
+    "imageDeleted": "Image Deleted",
+    "imageDeletedDesc": "The artwork has been removed."
 }

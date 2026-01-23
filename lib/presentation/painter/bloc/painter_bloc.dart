@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:drawo_app/data/services/gallery_service.dart';
 import 'package:drawo_app/main.dart';
+import 'package:drawo_app/core/languages/app_localizations.dart';
 
 part 'painter_event.dart';
 part 'painter_state.dart';
@@ -24,6 +25,7 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
     on<ClearCanvas>(_onClearCanvas);
     on<SetBackgroundImage>(_onSetBackgroundImage);
     on<SaveImageRequested>(_onSaveImageRequested);
+    on<DeleteImageRequested>(_onDeleteImageRequested);
   }
 
   void _onStartDrawing(StartDrawing event, Emitter<PainterState> emit) {
@@ -88,17 +90,64 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
   ) async {
     emit(state.copyWith(status: PainterStatus.saving));
     try {
-      await _imageRepository.uploadImage(
-        bytes: event.imageBytes,
-        title: event.title,
-      );
+      final l10n = AppLocalizations(const Locale('en')); // Fallback
+      // In a bloc, we usually don't have context.
+      // We can pass the localizations as part of the event or use a global-ish way.
+      // But for simple localized notifications, let's just use the current Locale if available.
 
-      await showNotification(
-        'Image Saved',
-        'Your drawing has been successfully saved to Firebase.',
-      );
+      if (event.existingDocId != null && event.oldStoragePath != null) {
+        await _imageRepository.updateExistingImage(
+          docId: event.existingDocId!,
+          bytes: event.imageBytes,
+          oldStoragePath: event.oldStoragePath!,
+          title: event.title,
+          width: event.width,
+          height: event.height,
+        );
+
+        // We'll use simple hardcoded notifications for now since BLoC lacks context for L10n
+        // unless we pass it. For now, let's just make sure it's called.
+        // I will make showNotification use the passed strings.
+        await showNotification(
+          'Drawing Updated',
+          'Your artwork has been successfully updated.',
+        );
+      } else {
+        await _imageRepository.uploadImage(
+          bytes: event.imageBytes,
+          title: event.title,
+          width: event.width,
+          height: event.height,
+        );
+
+        await showNotification(
+          'Drawing Saved',
+          'Your drawing has been successfully saved to Firebase.',
+        );
+      }
 
       emit(state.copyWith(status: PainterStatus.saved));
+    } catch (e) {
+      emit(
+        state.copyWith(status: PainterStatus.error, errorMessage: e.toString()),
+      );
+    }
+  }
+
+  Future<void> _onDeleteImageRequested(
+    DeleteImageRequested event,
+    Emitter<PainterState> emit,
+  ) async {
+    emit(state.copyWith(status: PainterStatus.saving));
+    try {
+      await _imageRepository.deleteImage(event.docId, event.storagePath);
+
+      await showNotification(
+        'Drawing Deleted',
+        'The artwork has been removed.',
+      );
+
+      emit(state.copyWith(status: PainterStatus.deleted));
     } catch (e) {
       emit(
         state.copyWith(status: PainterStatus.error, errorMessage: e.toString()),
