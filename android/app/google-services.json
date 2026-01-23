@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "146064547814",
+    "project_id": "drawing-app-e7cd3",
+    "storage_bucket": "drawing-app-e7cd3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146064547814:android:bd22b3564170d2487dc027",
+        "android_client_info": {
+          "package_name": "com.example.drawo_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqFKcYWpIPxd4dxn1x3TOxanNhITRNb8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
