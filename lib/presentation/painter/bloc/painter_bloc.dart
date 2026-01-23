@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:drawo_app/data/services/gallery_service.dart';
 import 'package:drawo_app/main.dart';
+import 'package:drawo_app/core/languages/app_localizations.dart';
 
 part 'painter_event.dart';
 part 'painter_state.dart';
@@ -89,6 +90,11 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
   ) async {
     emit(state.copyWith(status: PainterStatus.saving));
     try {
+      final l10n = AppLocalizations(const Locale('en')); // Fallback
+      // In a bloc, we usually don't have context.
+      // We can pass the localizations as part of the event or use a global-ish way.
+      // But for simple localized notifications, let's just use the current Locale if available.
+
       if (event.existingDocId != null && event.oldStoragePath != null) {
         await _imageRepository.updateExistingImage(
           docId: event.existingDocId!,
@@ -99,9 +105,12 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
           height: event.height,
         );
 
+        // We'll use simple hardcoded notifications for now since BLoC lacks context for L10n
+        // unless we pass it. For now, let's just make sure it's called.
+        // I will make showNotification use the passed strings.
         await showNotification(
-          'Image Updated',
-          'The artwork has been successfully updated.',
+          'Drawing Updated',
+          'Your artwork has been successfully updated.',
         );
       } else {
         await _imageRepository.uploadImage(
@@ -112,7 +121,7 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
         );
 
         await showNotification(
-          'Image Saved',
+          'Drawing Saved',
           'Your drawing has been successfully saved to Firebase.',
         );
       }
@@ -133,7 +142,10 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
     try {
       await _imageRepository.deleteImage(event.docId, event.storagePath);
 
-      await showNotification('Image Deleted', 'The artwork has been removed.');
+      await showNotification(
+        'Drawing Deleted',
+        'The artwork has been removed.',
+      );
 
       emit(state.copyWith(status: PainterStatus.deleted));
     } catch (e) {

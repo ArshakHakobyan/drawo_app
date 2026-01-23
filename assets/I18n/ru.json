@@ -27,5 +27,11 @@
     "namerequired": "Имя обязательно.",
     "entervalidemail": "Введите действительный адрес электронной почты.",
     "passwordshouldmatch": "Пароли должны совпадать.",
-    "mustbeatchars": "Должно быть не менее 6 символов."
+    "mustbeatchars": "Должно быть не менее 6 символов.",
+    "imageSaved": "Изображение сохранено",
+    "imageSavedDesc": "Ваш рисунок успешно сохранен в Firebase.",
+    "imageUpdated": "Изображение обновлено",
+    "imageUpdatedDesc": "Работа была успешно обновлена.",
+    "imageDeleted": "Изображение удалено",
+    "imageDeletedDesc": "Работа была удалена."
 }
