@@ -76,7 +76,8 @@ class GalleryService {
     final url = await task.ref.getDownloadURL();
 
     // Update existing document
-    await _firestore
+
+    _firestore
         .collection('users')
         .doc(_uid)
         .collection('images')

@@ -90,11 +90,6 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
   ) async {
     emit(state.copyWith(status: PainterStatus.saving));
     try {
-      final l10n = AppLocalizations(const Locale('en')); // Fallback
-      // In a bloc, we usually don't have context.
-      // We can pass the localizations as part of the event or use a global-ish way.
-      // But for simple localized notifications, let's just use the current Locale if available.
-
       if (event.existingDocId != null && event.oldStoragePath != null) {
         await _imageRepository.updateExistingImage(
           docId: event.existingDocId!,
@@ -105,10 +100,7 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
           height: event.height,
         );
 
-        // We'll use simple hardcoded notifications for now since BLoC lacks context for L10n
-        // unless we pass it. For now, let's just make sure it's called.
-        // I will make showNotification use the passed strings.
-        await showNotification(
+        showNotification(
           'Drawing Updated',
           'Your artwork has been successfully updated.',
         );
@@ -120,7 +112,7 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
           height: event.height,
         );
 
-        await showNotification(
+        showNotification(
           'Drawing Saved',
           'Your drawing has been successfully saved to Firebase.',
         );
@@ -142,10 +134,7 @@ class PainterBloc extends Bloc<PainterEvent, PainterState> {
     try {
       await _imageRepository.deleteImage(event.docId, event.storagePath);
 
-      await showNotification(
-        'Drawing Deleted',
-        'The artwork has been removed.',
-      );
+      showNotification('Drawing Deleted', 'The artwork has been removed.');
 
       emit(state.copyWith(status: PainterStatus.deleted));
     } catch (e) {

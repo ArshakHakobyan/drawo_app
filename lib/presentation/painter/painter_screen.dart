@@ -10,9 +10,11 @@ import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/core/service_locator.dart' as service_locator;
 import 'package:drawo_app/data/models/drawing_model.dart';
 import 'package:drawo_app/presentation/painter/bloc/painter_bloc.dart';
-import 'package:drawo_app/presentation/gallery/widgets/frosted_glass_container.dart';
+import 'package:drawo_app/presentation/common/components/glass_container.dart';
 import 'package:drawo_app/presentation/gallery/widgets/main_background.dart';
 import 'package:drawo_app/core/languages/app_localizations.dart';
+import 'package:drawo_app/presentation/common/components/common_header.dart';
+import 'package:drawo_app/presentation/common/components/header_icon_button.dart';
 
 class PainterScreen extends StatelessWidget {
   final DrawingModel? drawing;
@@ -237,69 +239,41 @@ class _PainterViewState extends State<_PainterView> {
 
   Widget _buildHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return SizedBox(
-      height: 102,
-      child: FrostedGlassContainer(
-        height: 102,
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Image.asset(MediaAssets.backIcon, height: 24),
-                ),
-                Text(
-                  widget.drawing != null ? l10n.edit : l10n.newImage,
-                  style: const TextStyle(
-                    color: Palette.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Row(
-                  children: [
-                    if (widget.drawing != null) ...[
-                      GestureDetector(
-                        onTap: () {
-                          context.read<PainterBloc>().add(
-                            DeleteImageRequested(
-                              widget.drawing!.id,
-                              widget.drawing!.storagePath,
-                            ),
-                          );
-                        },
-                        child: const Icon(
-                          Icons.delete_outline,
-                          color: Palette.red,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                    ],
-                    GestureDetector(
-                      onTap: _shareCanvas,
-                      child: const Icon(
-                        Icons.share,
-                        color: Palette.white,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    GestureDetector(
-                      onTap: _saveCanvas,
-                      child: Image.asset(MediaAssets.doneIcon, height: 24),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+    return CommonHeader(
+      title: widget.drawing != null ? l10n.edit : l10n.newImage,
+      leading: HeaderIconButton(
+        asset: MediaAssets.backIcon,
+        color: Palette.white,
+        onTap: () => Navigator.pop(context),
       ),
+      actions: [
+        if (widget.drawing != null) ...[
+          HeaderIconButton(
+            icon: Icons.delete_outline,
+            color: Palette.red,
+            onTap: () {
+              context.read<PainterBloc>().add(
+                DeleteImageRequested(
+                  widget.drawing!.id,
+                  widget.drawing!.storagePath,
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
+        HeaderIconButton(
+          icon: Icons.share,
+          color: Palette.white,
+          onTap: _shareCanvas,
+        ),
+        const SizedBox(width: 8),
+        HeaderIconButton(
+          asset: MediaAssets.doneIcon,
+          color: Palette.white,
+          onTap: _saveCanvas,
+        ),
+      ],
     );
   }
 
@@ -310,7 +284,7 @@ class _PainterViewState extends State<_PainterView> {
       right: 20,
       child: SizedBox(
         height: 80,
-        child: FrostedGlassContainer(
+        child: GlassContainer(
           height: 80,
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           child: Row(
