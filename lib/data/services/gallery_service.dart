@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:drawo_app/data/models/drawing_model.dart';
+import 'package:flutter/material.dart';
 
 class GalleryService {
   GalleryService({
@@ -28,29 +29,39 @@ class GalleryService {
   }) async {
     if (_uid == null) throw Exception('User not authenticated');
 
-    final name = fileName ?? 'img_${DateTime.now().millisecondsSinceEpoch}.png';
-    final storagePath = 'users/$_uid/images/$name';
+    try {
+      final name =
+          fileName ?? 'img_${DateTime.now().millisecondsSinceEpoch}.png';
+      final storagePath = 'users/$_uid/images/$name';
 
-    final task = await _storage
-        .ref(storagePath)
-        .putData(bytes, SettableMetadata(contentType: 'image/png'));
-    final url = await task.ref.getDownloadURL();
+      final ref = _storage.ref(storagePath);
+      final uploadTask = ref.putData(
+        bytes,
+        SettableMetadata(contentType: 'image/png'),
+      );
 
-    final doc = await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('images')
-        .add({
-          'url': url,
-          'storagePath': storagePath,
-          'title': (title?.trim().isEmpty ?? true) ? null : title,
-          'sizeBytes': bytes.length,
-          'width': width,
-          'height': height,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
+      final snapshot = await uploadTask;
+      final url = await snapshot.ref.getDownloadURL();
 
-    return doc.id;
+      final doc = await _firestore
+          .collection('users')
+          .doc(_uid)
+          .collection('images')
+          .add({
+            'url': url,
+            'storagePath': storagePath,
+            'title': (title?.trim().isEmpty ?? true) ? null : title,
+            'sizeBytes': bytes.length,
+            'width': width,
+            'height': height,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+      return doc.id;
+    } catch (e) {
+      debugPrint('🔥 uploadImage error: $e');
+      rethrow;
+    }
   }
 
   Future<void> updateExistingImage({
@@ -76,6 +87,7 @@ class GalleryService {
     final url = await task.ref.getDownloadURL();
 
     // Update existing document
+
     await _firestore
         .collection('users')
         .doc(_uid)
