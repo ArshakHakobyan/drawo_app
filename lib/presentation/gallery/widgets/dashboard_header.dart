@@ -38,7 +38,7 @@ class DashboardHeader extends StatelessWidget {
                 asset: MediaAssets.addIcon,
                 color: Palette.whiter,
                 onTap: () {
-                  Navigator.of(context).pushNamed(AppRoutes.painter);
+                  Navigator.of(context).pushNamed(AppRoutes.drawing);
                 },
               )
             else
@@ -58,7 +58,7 @@ class DashboardHeader extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            backgroundColor: const Color(0xFF1E1E1E),
+            backgroundColor: Palette.surface,
             title: Text(
               l10n.areyousureexit,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(

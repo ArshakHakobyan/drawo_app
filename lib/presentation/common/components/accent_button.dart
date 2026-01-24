@@ -9,6 +9,7 @@ class AccentButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final AppButtonVariant variant;
   final double radius;
+  final double? width;
   final bool showLoading;
   final Color loadingColor;
 
@@ -20,6 +21,7 @@ class AccentButton extends StatelessWidget {
     this.radius = 8,
     this.showLoading = false,
     this.loadingColor = Palette.whiter,
+    this.width,
   });
 
   bool get _enabled => onPressed != null;
@@ -35,7 +37,7 @@ class AccentButton extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 88),
       child: SizedBox(
-        width: 335,
+        width: width ?? 335,
         height: height,
         child: Material(
           color: Colors.transparent,
@@ -96,11 +98,11 @@ class AccentButton extends StatelessWidget {
       case AppButtonVariant.primaryGradient:
         return null; // gradient used
       case AppButtonVariant.primaryLight:
-        return Colors.white;
+        return Palette.white;
       case AppButtonVariant.neutral:
-        return const Color(0xFF6B6B6B);
+        return Palette.accentGrey;
       case AppButtonVariant.destructive:
-        return const Color(0xFFE74D4D);
+        return Palette.lightAccentRed;
     }
   }
 
@@ -109,7 +111,7 @@ class AccentButton extends StatelessWidget {
       case AppButtonVariant.primaryGradient:
         return Palette.whiter;
       case AppButtonVariant.primaryLight:
-        return const Color(0xff131313);
+        return Palette.background;
       case AppButtonVariant.neutral:
         return Palette.darkGrey;
       case AppButtonVariant.destructive:

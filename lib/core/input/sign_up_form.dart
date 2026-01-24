@@ -21,7 +21,7 @@ class SignUpForm extends FormController {
               validators: [
                 Validators.required,
                 Validators.pattern(
-                  RegExp(r'^.{6,}$', unicode: true),
+                  RegExp(r'^.{8,}$', unicode: true),
                   validationMessage: 'passwordComplexity',
                 ),
               ],

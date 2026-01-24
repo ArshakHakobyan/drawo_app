@@ -12,12 +12,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupLocalNotifications();
   runApp(const DrawingApp());
-  // DevicePreview(
-  //   enabled: true,
-  //   builder: (context) {
-  //     return const DrawingApp();
-  //   },
-  // );
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

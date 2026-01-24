@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/presentation/common/components/shadow_renderer.dart';
 
 class FrostedContainer extends StatelessWidget {
@@ -8,8 +9,6 @@ class FrostedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xFF87858F);
-
     return Stack(
       children: [
         Container(
@@ -18,7 +17,7 @@ class FrostedContainer extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFF2C3E50), Color(0xFF16212C)],
+              colors: [Palette.darkSlate, Palette.deeperSlate],
             ),
           ),
         ),
@@ -32,7 +31,7 @@ class FrostedContainer extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(borderRadius),
-            border: Border.all(color: borderColor, width: 0.5),
+            border: Border.all(color: Palette.grey, width: 0.5),
           ),
         ),
         Positioned.fill(
@@ -41,7 +40,7 @@ class FrostedContainer extends StatelessWidget {
               radius: borderRadius,
               blur: 40,
               offset: const Offset(0, 1),
-              color: const Color(0xffE3E3E3).withValues(alpha: 0.2),
+              color: Palette.whiter.withValues(alpha: 0.2),
               thickness: 1,
             ),
           ),

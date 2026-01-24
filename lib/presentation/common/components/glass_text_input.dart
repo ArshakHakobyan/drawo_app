@@ -5,6 +5,7 @@ import 'package:drawo_app/presentation/common/components/frosted_container.dart'
 import 'package:reactive_forms/reactive_forms.dart';
 
 class GlassTextInput extends StatelessWidget {
+  final double? width;
   final FormControl<String> formControl;
   final String label;
   final String hint;
@@ -21,6 +22,7 @@ class GlassTextInput extends StatelessWidget {
     super.key,
     required this.context,
     required this.formControl,
+    this.width,
     this.label = '',
     this.hint = '',
     this.fillColor = Colors.transparent,
@@ -35,7 +37,7 @@ class GlassTextInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final localeStrings = AppLocalizations.of(context)!;
     return Container(
-      width: 335,
+      width: width ?? 335,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -89,7 +91,8 @@ class GlassTextInput extends StatelessWidget {
                     obscuringCharacter: '*',
                     validationMessages: {
                       ValidationMessage.required: (_) =>
-                          requiredMessage ?? 'required',
+                          requiredMessage ??
+                          localeStrings.translate('required'),
                       'passwordComplexity': (_) =>
                           passwordCustomKeyMessage ?? '',
                       ValidationMessage.email: (_) =>

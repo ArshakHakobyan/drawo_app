@@ -115,6 +115,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     GlassTextInput(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       formControl:
                                           _registrationForm.nameControl,
                                       label: localeStrings.name,
@@ -129,6 +132,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     GlassTextInput(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       formControl:
                                           _registrationForm.emailControl,
                                       label: localeStrings.email,
@@ -143,6 +149,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     GlassTextInput(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       context: context,
                                       formControl:
                                           _registrationForm.passwordControl,
@@ -161,6 +170,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     GlassTextInput(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       context: context,
                                       formControl: _registrationForm
                                           .confirmPasswordControl,

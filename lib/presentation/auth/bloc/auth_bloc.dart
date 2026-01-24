@@ -20,6 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignUpRequested>(_onAuthSignUpRequested);
     on<AuthSignOutRequested>(_onAuthSignOutRequested);
 
+    // Watch for auth changes
     _userSubscription = _authRepository.onAuthStateChanged.listen((user) {
       if (user != null) {
         add(AuthStarted());
@@ -29,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
+  // Check if user is logged in on start
   Future<void> _onAuthStarted(
     AuthStarted event,
     Emitter<AuthState> emit,
@@ -41,6 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  // Handle login logic
   Future<void> _onAuthSignInRequested(
     AuthSignInRequested event,
     Emitter<AuthState> emit,
@@ -68,6 +71,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  // Handle registration logic
   Future<void> _onAuthSignUpRequested(
     AuthSignUpRequested event,
     Emitter<AuthState> emit,
@@ -93,6 +97,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  // Clear session and log out
   Future<void> _onAuthSignOutRequested(
     AuthSignOutRequested event,
     Emitter<AuthState> emit,

@@ -29,13 +29,13 @@
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Allows access to your photo library to select images for editing.</string>
+		<string>Drawo App requires access to the photo library to select images for use as custom backgrounds in drawings.</string>
 		<key>NSCameraUsageDescription</key>
-		<string>Allows access to the camera to take photos for editing.</string>
+		<string>Camera access is included for technical compatibility with third-party image processing libraries integrated in the app.</string>
 		<key>NSMicrophoneUsageDescription</key>
-		<string>Required by a third-party library.</string>
+		<string>Microphone access is included for technical compatibility with integrated media frameworks.</string>
 		<key>NSPhotoLibraryAddUsageDescription</key>
-		<string>Required by a third-party library.</string>
+		<string>Drawo App saves output images to the device gallery for storage.</string>
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>

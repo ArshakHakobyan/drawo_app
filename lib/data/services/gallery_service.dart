@@ -3,9 +3,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:drawo_app/data/models/drawing_model.dart';
-import 'package:flutter/material.dart';
 
-class GalleryService {
+abstract class IGalleryService {
+  Stream<List<DrawingModel>> imagesStream();
+  Future<String> uploadImage({
+    required Uint8List bytes,
+    String? fileName,
+    String? title,
+    int? width,
+    int? height,
+  });
+  Future<void> updateExistingImage({
+    required String docId,
+    required Uint8List bytes,
+    required String oldStoragePath,
+    String? title,
+    int? width,
+    int? height,
+  });
+  Future<void> deleteImage(String docId, String storagePath);
+}
+
+class GalleryService implements IGalleryService {
   GalleryService({
     required FirebaseFirestore firestore,
     required FirebaseStorage storage,
@@ -20,6 +39,12 @@ class GalleryService {
 
   String? get _uid => _auth.currentUser?.uid;
 
+  CollectionReference<Map<String, dynamic>> get _userImagesCollection {
+    if (_uid == null) throw Exception('User not authenticated');
+    return _firestore.collection('users').doc(_uid).collection('images');
+  }
+
+  @override
   Future<String> uploadImage({
     required Uint8List bytes,
     String? fileName,
@@ -27,43 +52,31 @@ class GalleryService {
     int? width,
     int? height,
   }) async {
-    if (_uid == null) throw Exception('User not authenticated');
+    final name = fileName ?? 'img_${DateTime.now().millisecondsSinceEpoch}.png';
+    final storagePath = 'users/$_uid/images/$name';
 
-    try {
-      final name =
-          fileName ?? 'img_${DateTime.now().millisecondsSinceEpoch}.png';
-      final storagePath = 'users/$_uid/images/$name';
+    final ref = _storage.ref(storagePath);
+    final snapshot = await ref.putData(
+      bytes,
+      SettableMetadata(contentType: 'image/png'),
+    );
 
-      final ref = _storage.ref(storagePath);
-      final uploadTask = ref.putData(
-        bytes,
-        SettableMetadata(contentType: 'image/png'),
-      );
+    final url = await snapshot.ref.getDownloadURL();
 
-      final snapshot = await uploadTask;
-      final url = await snapshot.ref.getDownloadURL();
+    final doc = await _userImagesCollection.add({
+      'url': url,
+      'storagePath': storagePath,
+      'title': _sanitizeTitle(title),
+      'sizeBytes': bytes.length,
+      'width': width,
+      'height': height,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
 
-      final doc = await _firestore
-          .collection('users')
-          .doc(_uid)
-          .collection('images')
-          .add({
-            'url': url,
-            'storagePath': storagePath,
-            'title': (title?.trim().isEmpty ?? true) ? null : title,
-            'sizeBytes': bytes.length,
-            'width': width,
-            'height': height,
-            'createdAt': FieldValue.serverTimestamp(),
-          });
-
-      return doc.id;
-    } catch (e) {
-      debugPrint('🔥 uploadImage error: $e');
-      rethrow;
-    }
+    return doc.id;
   }
 
+  @override
   Future<void> updateExistingImage({
     required String docId,
     required Uint8List bytes,
@@ -72,12 +85,10 @@ class GalleryService {
     int? width,
     int? height,
   }) async {
-    if (_uid == null) throw Exception('User not authenticated');
-
-    // Delete old image from storage
+    // 1. Delete old image from storage
     await _storage.ref(oldStoragePath).delete();
 
-    // Upload new image
+    // 2. Upload new image
     final name = 'img_${DateTime.now().millisecondsSinceEpoch}_rev.png';
     final storagePath = 'users/$_uid/images/$name';
 
@@ -86,45 +97,36 @@ class GalleryService {
         .putData(bytes, SettableMetadata(contentType: 'image/png'));
     final url = await task.ref.getDownloadURL();
 
-    // Update existing document
-
-    await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('images')
-        .doc(docId)
-        .update({
-          'url': url,
-          'storagePath': storagePath,
-          'title': (title?.trim().isEmpty ?? true) ? null : title,
-          'sizeBytes': bytes.length,
-          'width': width,
-          'height': height,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
+    // 3. Update existing document
+    await _userImagesCollection.doc(docId).update({
+      'url': url,
+      'storagePath': storagePath,
+      'title': _sanitizeTitle(title),
+      'sizeBytes': bytes.length,
+      'width': width,
+      'height': height,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
   }
 
+  @override
   Stream<List<DrawingModel>> imagesStream() {
     if (_uid == null) return Stream.value([]);
 
-    return _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('images')
+    return _userImagesCollection
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs.map((d) => DrawingModel.fromDoc(d)).toList());
   }
 
+  @override
   Future<void> deleteImage(String docId, String storagePath) async {
-    if (_uid == null) throw Exception('User not authenticated');
-
     await _storage.ref(storagePath).delete();
-    await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('images')
-        .doc(docId)
-        .delete();
+    await _userImagesCollection.doc(docId).delete();
+  }
+
+  String? _sanitizeTitle(String? title) {
+    if (title == null || title.trim().isEmpty) return null;
+    return title.trim();
   }
 }
