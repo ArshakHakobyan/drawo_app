@@ -57,7 +57,7 @@ class _GalleryDashboardLayout extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pushNamed(AppRoutes.painter);
                           },
-                          radius: 30,
+                          radius: 8,
                         ),
                       );
                     }
