@@ -41,7 +41,7 @@ class FrostedContainer extends StatelessWidget {
               radius: borderRadius,
               blur: 40,
               offset: const Offset(0, 1),
-              color: const Color(0xffE3E3E3).withOpacity(0.2),
+              color: const Color(0xffE3E3E3).withValues(alpha: 0.2),
               thickness: 1,
             ),
           ),

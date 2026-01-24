@@ -10,7 +10,6 @@ import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/core/service_locator.dart' as service_locator;
 import 'package:drawo_app/data/models/drawing_model.dart';
 import 'package:drawo_app/presentation/painter/bloc/painter_bloc.dart';
-import 'package:drawo_app/presentation/common/components/glass_container.dart';
 import 'package:drawo_app/presentation/gallery/widgets/main_background.dart';
 import 'package:drawo_app/core/languages/app_localizations.dart';
 import 'package:drawo_app/presentation/common/components/common_header.dart';
@@ -39,6 +38,7 @@ class _PainterView extends StatefulWidget {
 
 class _PainterViewState extends State<_PainterView> {
   final GlobalKey _canvasKey = GlobalKey();
+  final GlobalKey _colorPickerKey = GlobalKey();
 
   @override
   void initState() {
@@ -127,28 +127,154 @@ class _PainterViewState extends State<_PainterView> {
     }
   }
 
+  List<Color> _generateColors() {
+    List<Color> colors = [];
+    // Row 1: Grayscale (White to Black)
+    for (int i = 0; i < 12; i++) {
+      int v = 255 - ((i * 255) / 11).round();
+      colors.add(Color.fromARGB(255, v, v, v));
+    }
+
+    // Rows 2-9: Colors (8 rows)
+    for (int r = 0; r < 8; r++) {
+      // Lightness from 0.15 (dark) to 0.85 (light)
+      double lightness = 0.15 + (0.7 * r / 7);
+      for (int c = 0; c < 12; c++) {
+        // Hue starting from ~220 (Blue) and rotating
+        double hue = (220.0 + (c * 30.0)) % 360.0;
+        colors.add(HSLColor.fromAHSL(1.0, hue, 0.9, lightness).toColor());
+      }
+    }
+    return colors;
+  }
+
   void _showColorPicker() {
+    final painterBloc = context.read<PainterBloc>();
+    final colors = _generateColors();
+    const int crossAxisCount = 12;
+
+    // Get the render object of the color picker button
+    final RenderBox? button =
+        _colorPickerKey.currentContext?.findRenderObject() as RenderBox?;
+    final Offset buttonPosition =
+        button?.localToGlobal(Offset.zero) ?? Offset.zero;
+    final Size buttonSize = button?.size ?? Size.zero;
+
+    // Assuming a standard width and some right margin
+    const double dialogWidth = 300;
+    // Calculate left position to align the arrow nicely with the button center
+    // Arrow is roughly at right: 28 inside the dialog.
+    // Dialog content is constrained.
+    // Let's try to position the dialog such that its top-right area is near the button.
+
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Pick a color'),
-          backgroundColor: Palette.darkGrey,
-          titleTextStyle: const TextStyle(color: Palette.white, fontSize: 18),
-          content: SingleChildScrollView(
-            child: ColorPicker(
-              pickerColor: this.context.read<PainterBloc>().state.selectedColor,
-              onColorChanged: (color) {
-                this.context.read<PainterBloc>().add(ChangeColor(color));
-              },
+      barrierColor: Colors.transparent, // No dark overlay
+      builder: (dialogContext) {
+        return Stack(
+          children: [
+            // Close on tap outside
+            GestureDetector(
+              onTap: () => Navigator.of(dialogContext).pop(),
+              behavior: HitTestBehavior.translucent,
+              child: const SizedBox.expand(),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Done',
-                style: TextStyle(color: Palette.primary),
+            Positioned(
+              top: buttonPosition.dy - buttonSize.height,
+              right:
+                  MediaQuery.of(context).size.width -
+                  (buttonPosition.dx + buttonSize.width) -
+                  10, // Align right edge relative to button
+              child: SizedBox(
+                width: dialogWidth,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 4, bottom: 8),
+                        child: Text(
+                          'Color Picker',
+                          style: TextStyle(
+                            color: Palette.whiter,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topRight,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE5E5E5),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.3),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: GridView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: crossAxisCount,
+                                    crossAxisSpacing: 0,
+                                    mainAxisSpacing: 0,
+                                    childAspectRatio: 1.0,
+                                  ),
+                              itemCount: colors.length,
+                              itemBuilder: (context, index) {
+                                final color = colors[index];
+                                final isSelected =
+                                    painterBloc.state.selectedColor.value ==
+                                    color.value;
+                                return GestureDetector(
+                                  onTap: () {
+                                    painterBloc.add(ChangeColor(color));
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: color,
+                                      border: isSelected
+                                          ? Border.all(
+                                              color: Colors.white,
+                                              width: 2,
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            top: -6,
+                            right: 24, // Roughly aligns with button center
+                            child: Transform.rotate(
+                              angle: 45 * 3.14159 / 180,
+                              child: Container(
+                                width: 14,
+                                height: 14,
+                                color: const Color(0xFFE5E5E5),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -183,53 +309,49 @@ class _PainterViewState extends State<_PainterView> {
         return Scaffold(
           body: Stack(
             children: [
-              MainBackground(),
+              const MainBackground(),
               Column(
                 children: [
                   _buildHeader(context),
+                  _buildToolbar(context, state),
                   Expanded(
-                    child: Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 140),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 110),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: const Color(0xFF4A90E2),
+                            width: 3,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
                             ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(24),
-                              child: RepaintBoundary(
-                                key: _canvasKey,
-                                child: Container(
-                                  color: Colors.white,
-                                  child: const _DrawingCanvas(),
-                                ),
-                              ),
-                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(21),
+                          child: RepaintBoundary(
+                            key: _canvasKey,
+                            child: const _DrawingCanvas(),
                           ),
                         ),
-                        _buildToolbar(context, state),
-                        if (state.status == PainterStatus.saving)
-                          Container(
-                            color: Colors.black26,
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                color: Palette.primary,
-                              ),
-                            ),
-                          ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
+              if (state.status == PainterStatus.saving)
+                Container(
+                  color: Colors.black26,
+                  child: const Center(
+                    child: CircularProgressIndicator(color: Palette.primary),
+                  ),
+                ),
             ],
           ),
         );
@@ -247,21 +369,6 @@ class _PainterViewState extends State<_PainterView> {
         onTap: () => Navigator.pop(context),
       ),
       actions: [
-        if (widget.drawing != null) ...[
-          HeaderIconButton(
-            icon: Icons.delete_outline,
-            color: Palette.red,
-            onTap: () {
-              context.read<PainterBloc>().add(
-                DeleteImageRequested(
-                  widget.drawing!.id,
-                  widget.drawing!.storagePath,
-                ),
-              );
-            },
-          ),
-          const SizedBox(width: 8),
-        ],
         HeaderIconButton(
           icon: Icons.share,
           color: Palette.white,
@@ -278,77 +385,111 @@ class _PainterViewState extends State<_PainterView> {
   }
 
   Widget _buildToolbar(BuildContext context, PainterState state) {
-    return Positioned(
-      bottom: 40,
-      left: 20,
-      right: 20,
-      child: SizedBox(
-        height: 80,
-        child: GlassContainer(
-          height: 80,
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _ToolbarAction(
-                icon: MediaAssets.pickerIcon,
-                onTap: _showColorPicker,
-                color: state.selectedColor,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Size Slider on the left
+          const Text(
+            'Size',
+            style: TextStyle(
+              color: Palette.whiter,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            flex: 2,
+            child: SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                trackHeight: 10,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
+                overlayShape: const RoundSliderOverlayShape(overlayRadius: 24),
+                activeTrackColor: Palette.primary,
+                inactiveTrackColor: Palette.grey.withValues(alpha: 0.3),
+                thumbColor: Palette.white,
               ),
+              child: Slider(
+                value: state.strokeWidth,
+                min: 1,
+                max: 30,
+                onChanged: (val) =>
+                    context.read<PainterBloc>().add(ChangeStrokeWidth(val)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Actions on the right
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.drawing != null) ...[
+                _ToolbarAction(
+                  iconData: Icons.delete_outline_rounded,
+                  color: Palette.red,
+                  onTap: () {
+                    context.read<PainterBloc>().add(
+                      DeleteImageRequested(
+                        widget.drawing!.id,
+                        widget.drawing!.storagePath,
+                      ),
+                    );
+                  },
+                ),
+              ],
+              const SizedBox(width: 8),
+              _ToolbarAction(
+                icon: MediaAssets.downloadIcon,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Saving to gallery...')),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+              _ToolbarAction(icon: MediaAssets.galleryIcon, onTap: _pickImage),
+              const SizedBox(width: 8),
               _ToolbarAction(
                 icon: MediaAssets.panIcon,
                 onTap: () =>
                     context.read<PainterBloc>().add(const ToggleEraser(false)),
                 isActive: !state.isEraser,
               ),
+              const SizedBox(width: 8),
               _ToolbarAction(
                 icon: MediaAssets.eraserIcon,
                 onTap: () =>
                     context.read<PainterBloc>().add(const ToggleEraser(true)),
                 isActive: state.isEraser,
               ),
-              _ToolbarAction(icon: MediaAssets.galleryIcon, onTap: _pickImage),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Size',
-                      style: TextStyle(color: Palette.whiter, fontSize: 10),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: Slider(
-                        value: state.strokeWidth,
-                        min: 1,
-                        max: 30,
-                        activeColor: Palette.primary,
-                        inactiveColor: Palette.grey,
-                        onChanged: (val) => context.read<PainterBloc>().add(
-                          ChangeStrokeWidth(val),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              const SizedBox(width: 8),
+              _ToolbarAction(
+                key: _colorPickerKey,
+                icon: MediaAssets.pickerIcon,
+                onTap: _showColorPicker,
+                color: state.selectedColor,
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
 class _ToolbarAction extends StatelessWidget {
-  final String icon;
+  final String? icon;
+  final IconData? iconData;
   final VoidCallback onTap;
   final bool isActive;
   final Color? color;
 
   const _ToolbarAction({
-    required this.icon,
+    super.key,
+    this.icon,
+    this.iconData,
     required this.onTap,
     this.isActive = false,
     this.color,
@@ -359,26 +500,43 @@ class _ToolbarAction extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 44,
-        height: 44,
+        width: 38,
+        height: 38,
         decoration: BoxDecoration(
           color: isActive
-              ? Palette.primary.withOpacity(0.3)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+              ? Palette.primary.withValues(alpha: 0.3)
+              : Palette.darkGrey.withValues(alpha: 0.6),
+          shape: BoxShape.circle,
         ),
         child: Center(
-          child: color != null
-              ? Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Palette.white, width: 2),
-                  ),
-                )
-              : Image.asset(icon, height: 24, color: Palette.white),
+          child: iconData != null
+              ? Icon(iconData, color: color ?? Palette.white, size: 24)
+              : Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      icon!,
+                      height: 24,
+                      color: (color != null && icon != MediaAssets.pickerIcon)
+                          ? color
+                          : Palette.white,
+                    ),
+                    if (icon == MediaAssets.pickerIcon && color != null)
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Palette.white, width: 1),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
         ),
       ),
     );

@@ -19,7 +19,7 @@ class AuthScaffold extends StatelessWidget {
         ),
         Container(
           constraints: const BoxConstraints.expand(),
-          color: const Color(0xff131313).withOpacity(0.75),
+          color: const Color(0xff131313).withValues(alpha: 0.75),
         ),
         Container(
           decoration: BoxDecoration(

@@ -32,7 +32,7 @@ class PropertyHeader extends StatelessWidget {
                 border: Border.all(
                   color: isChecked
                       ? Palette.primary
-                      : Palette.whiter.withOpacity(0.5),
+                      : Palette.whiter.withValues(alpha: 0.5),
                   width: 1.5,
                 ),
                 borderRadius: BorderRadius.circular(4),

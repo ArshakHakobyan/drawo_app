@@ -27,7 +27,7 @@ class ArtworksGrid extends StatelessWidget {
             child: Text(
               'No artworks yet', // TODO: Add to localization
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Palette.whiter.withOpacity(0.5),
+                color: Palette.whiter.withValues(alpha: 0.5),
                 fontSize: 16,
               ),
             ),
@@ -80,7 +80,7 @@ class ArtworkCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -92,7 +92,7 @@ class ArtworkCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
-          splashColor: Palette.white.withOpacity(0.2),
+          splashColor: Palette.white.withValues(alpha: 0.2),
           child: Image.network(
             imageUrl,
             fit: BoxFit.cover,

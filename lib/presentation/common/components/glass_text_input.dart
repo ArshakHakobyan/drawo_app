@@ -76,7 +76,7 @@ class GlassTextInput extends StatelessWidget {
                       enabledBorder: InputBorder.none,
                       hintText: hint,
                       hintStyle: TextStyle(
-                        color: Palette.whiter.withOpacity(0.4),
+                        color: Palette.whiter.withValues(alpha: 0.4),
                         fontSize: 18,
                       ),
                       contentPadding: EdgeInsets.zero,
@@ -101,7 +101,10 @@ class GlassTextInput extends StatelessWidget {
                     textInputAction: textInputAction,
                   ),
                   const SizedBox(height: 4),
-                  Container(height: 1, color: Palette.whiter.withOpacity(0.3)),
+                  Container(
+                    height: 1,
+                    color: Palette.whiter.withValues(alpha: 0.3),
+                  ),
                 ],
               ),
             ),

@@ -60,7 +60,7 @@ class GlassContainer extends StatelessWidget {
             ),
           ),
           // Content
-          Container(width: double.infinity, height: height, child: child),
+          SizedBox(width: double.infinity, height: height, child: child),
         ],
       ),
     );

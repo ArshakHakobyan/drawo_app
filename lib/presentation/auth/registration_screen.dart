@@ -40,7 +40,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               msg: state.error.toMessage(context),
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
-              backgroundColor: Palette.red.withOpacity(0.8),
+              backgroundColor: Palette.red.withValues(alpha: 0.8),
               textColor: Palette.white,
               fontSize: 14.0,
             );

@@ -1,6 +1,4 @@
-import 'package:drawo_app/core/resources/media_assets.dart';
 import 'package:drawo_app/core/routes/app_router.dart';
-import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/presentation/gallery/bloc/gallery_bloc.dart';
 import 'package:drawo_app/presentation/gallery/widgets/main_background.dart';
 import 'package:drawo_app/presentation/gallery/widgets/artworks_grid.dart';
