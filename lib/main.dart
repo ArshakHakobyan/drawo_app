@@ -1,4 +1,3 @@
-// import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:drawo_app/drawing_app.dart';
 import 'package:drawo_app/core/service_locator.dart' as service_locator;
 import 'package:drawo_app/firebase_options.dart';

@@ -18,12 +18,15 @@ class AuthService implements IAuthService {
   final FirebaseAuth _auth;
   AuthService({required FirebaseAuth auth}) : _auth = auth;
 
+  // Listen for Firebase authentication state changes
   @override
   Stream<User?> get onAuthStateChanged => _auth.authStateChanges();
 
+  // Get currently logged in user
   @override
   User? get currentUser => _auth.currentUser;
 
+  // Sign in with email and password
   @override
   Future<UserCredential> signIn({
     required String email,
@@ -33,6 +36,7 @@ class AuthService implements IAuthService {
     password: password.trim(),
   );
 
+  // Register new user with email and password
   @override
   Future<UserCredential> register({
     required String email,
@@ -42,6 +46,7 @@ class AuthService implements IAuthService {
     password: password.trim(),
   );
 
+  // Sign out currently logged in user
   @override
   Future<void> signOut() => _auth.signOut();
 }

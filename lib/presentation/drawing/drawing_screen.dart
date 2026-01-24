@@ -41,6 +41,7 @@ class _DrawingView extends StatefulWidget {
 class _DrawingViewState extends State<_DrawingView> {
   final GlobalKey _canvasKey = GlobalKey();
   final GlobalKey _colorPickerKey = GlobalKey();
+  final GlobalKey _shareButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -103,10 +104,19 @@ class _DrawingViewState extends State<_DrawingView> {
       if (byteData != null && mounted) {
         final bytes = byteData.buffer.asUint8List();
         final l10n = AppLocalizations.of(context);
+
+        // Calculate share button position for iPad support
+        final RenderBox? box =
+            _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+        final Rect? sharePositionOrigin = box != null
+            ? box.localToGlobal(Offset.zero) & box.size
+            : null;
+
         context.read<DrawingBloc>().add(
           ShareImageRequested(
             bytes,
             l10n?.shareText ?? 'Check out my drawing!',
+            sharePositionOrigin: sharePositionOrigin,
           ),
         );
       }
@@ -146,16 +156,21 @@ class _DrawingViewState extends State<_DrawingView> {
         button?.localToGlobal(Offset.zero) ?? Offset.zero;
     final Size buttonSize = button?.size ?? Size.zero;
 
-    // Assuming a standard width and some right margin
+    // Calculate popover position
+    final screenWidth = MediaQuery.of(context).size.width;
     const double dialogWidth = 300;
-    // Calculate left position to align the arrow nicely with the button center
-    // Arrow is roughly at right: 28 inside the dialog.
-    // Dialog content is constrained.
-    // Let's try to position the dialog such that its top-right area is near the button.
+    const double arrowCenterFromPopoverRight = 31.0;
+
+    final buttonCenterX = buttonPosition.dx + (buttonSize.width / 2);
+    final buttonCenterFromRight = screenWidth - buttonCenterX;
+
+    final popoverRight = (buttonCenterFromRight - arrowCenterFromPopoverRight)
+        .clamp(10.0, screenWidth - dialogWidth - 10);
+    final popoverTop = buttonPosition.dy + buttonSize.height - 200;
 
     showDialog(
       context: context,
-      barrierColor: Colors.transparent, // No dark overlay
+      barrierColor: Colors.transparent,
       builder: (dialogContext) {
         return Stack(
           children: [
@@ -166,11 +181,8 @@ class _DrawingViewState extends State<_DrawingView> {
               child: const SizedBox.expand(),
             ),
             Positioned(
-              top: buttonPosition.dy - buttonSize.height,
-              right:
-                  MediaQuery.of(context).size.width -
-                  (buttonPosition.dx + buttonSize.width) -
-                  10, // Align right edge relative to button
+              top: popoverTop,
+              right: popoverRight,
               child: SizedBox(
                 width: dialogWidth,
                 child: Material(
@@ -290,8 +302,14 @@ class _DrawingViewState extends State<_DrawingView> {
 
   Widget _buildHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 350; // iPhone SE is 320px wide
+
     return CommonHeader(
       title: widget.drawing != null ? l10n.edit : l10n.newImage,
+      sideWidth: isCompact
+          ? 100
+          : 120, // Give more room if needed or keep balanced
       leading: HeaderIconButton(
         asset: MediaAssets.backIcon,
         color: Palette.white,
@@ -299,11 +317,12 @@ class _DrawingViewState extends State<_DrawingView> {
       ),
       actions: [
         HeaderIconButton(
+          key: _shareButtonKey,
           icon: Icons.share,
           color: Palette.white,
           onTap: _shareCanvas,
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: isCompact ? 4 : 8),
         HeaderIconButton(
           asset: MediaAssets.doneIcon,
           color: Palette.white,
@@ -314,12 +333,15 @@ class _DrawingViewState extends State<_DrawingView> {
   }
 
   Widget _buildToolbar(BuildContext context, DrawingState state) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 375; // iPhone SE, 7, 8 are small
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Size Slider on the left
+          // Size Label
           const Text(
             'Size',
             style: TextStyle(
@@ -329,13 +351,17 @@ class _DrawingViewState extends State<_DrawingView> {
             ),
           ),
           const SizedBox(width: 4),
+          // Flexible Slider
           Expanded(
-            flex: 2,
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
-                trackHeight: 10,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
-                overlayShape: const RoundSliderOverlayShape(overlayRadius: 24),
+                trackHeight: isCompact ? 8 : 10,
+                thumbShape: RoundSliderThumbShape(
+                  enabledThumbRadius: isCompact ? 10 : 12,
+                ),
+                overlayShape: RoundSliderOverlayShape(
+                  overlayRadius: isCompact ? 20 : 24,
+                ),
                 activeTrackColor: Palette.primary,
                 inactiveTrackColor: Palette.grey.withValues(alpha: 0.3),
                 thumbColor: Palette.white,
@@ -349,7 +375,7 @@ class _DrawingViewState extends State<_DrawingView> {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: isCompact ? 4 : 8),
           // Actions on the right
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -367,29 +393,29 @@ class _DrawingViewState extends State<_DrawingView> {
                     );
                   },
                 ),
+                SizedBox(width: isCompact ? 4 : 8),
               ],
-              const SizedBox(width: 8),
               ToolbarAction(
                 icon: MediaAssets.downloadIcon,
                 onTap: _saveToGallery,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(icon: MediaAssets.galleryIcon, onTap: _pickImage),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(
                 icon: MediaAssets.panIcon,
                 onTap: () =>
                     context.read<DrawingBloc>().add(const ToggleEraser(false)),
                 isActive: !state.isEraser,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(
                 icon: MediaAssets.eraserIcon,
                 onTap: () =>
                     context.read<DrawingBloc>().add(const ToggleEraser(true)),
                 isActive: state.isEraser,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(
                 key: _colorPickerKey,
                 icon: MediaAssets.pickerIcon,

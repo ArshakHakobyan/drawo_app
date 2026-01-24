@@ -14,7 +14,7 @@ class MediaAssets {
   static const backIcon = '$_icons/back_icon.png';
   static const exitIcon = '$_icons/exit_icon.png';
   static const doneIcon = '$_icons/done_icon.png';
-  static const addIcon = '$_icons/ic_add.png'; // Replaces create_new
+  static const addIcon = '$_icons/ic_add.png';
   static const shareIcon = '$_icons/share_icon.png';
   static const downloadIcon = '$_icons/image_download_icon.png';
 
