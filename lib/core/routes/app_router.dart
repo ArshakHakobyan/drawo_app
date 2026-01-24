@@ -1,6 +1,6 @@
 import 'package:drawo_app/data/models/drawing_model.dart';
 import 'package:flutter/material.dart';
-import 'package:drawo_app/presentation/auth/auth_screen.dart';
+import 'package:drawo_app/presentation/auth/login_screen.dart';
 import 'package:drawo_app/presentation/gallery/gallery_screen.dart';
 import 'package:drawo_app/presentation/drawing/drawing_screen.dart';
 
@@ -14,7 +14,7 @@ class AppRoutes {
       case gallery:
         return MaterialPageRoute(builder: (_) => const GalleryScreen());
       case auth:
-        return MaterialPageRoute(builder: (_) => const AuthScreen());
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
       case drawing:
         final artwork = settings.arguments as DrawingModel?;
         return MaterialPageRoute(

@@ -15,6 +15,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     on<NetworkNotify>(_onNotify);
   }
 
+  // Monitor network changes and check initial connectivity status
   void _onObserve(NetworkObserve event, Emitter<NetworkState> emit) async {
     _subscription?.cancel();
 
@@ -35,6 +36,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     });
   }
 
+  // Update state with the results of network monitoring
   void _onNotify(NetworkNotify event, Emitter<NetworkState> emit) {
     emit(
       state.copyWith(

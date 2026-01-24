@@ -1,6 +1,6 @@
 # Drawo - Test Project
 
-Drawo is a Flutter application developed for testing purposes. It implements a fully functional drawing canvas, secure user authentication, and cloud data synchronization using Firebase. The primary goal of this project is to demonstrate clean architecture, robust state management, and efficient resource handling in a modern Flutter environment.
+Drawo is a Flutter application developed for testing purposes. It implements a fully functional drawing canvas, secure user authentication, and cloud data synchronization using Firebase.
 
 ## ⚠️ Flutter Version & Compatibility
 
@@ -102,5 +102,5 @@ pod install
 ```
 
 ---
-*Project maintained for testing and architectural demonstration.*
+*Project maintained for testing.*
 

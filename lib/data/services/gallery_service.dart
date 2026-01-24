@@ -44,6 +44,7 @@ class GalleryService implements IGalleryService {
     return _firestore.collection('users').doc(_uid).collection('images');
   }
 
+  // Upload a new image to Firebase Storage and Firestore
   @override
   Future<String> uploadImage({
     required Uint8List bytes,
@@ -76,6 +77,7 @@ class GalleryService implements IGalleryService {
     return doc.id;
   }
 
+  // Replace an existing image with a new one
   @override
   Future<void> updateExistingImage({
     required String docId,
@@ -109,6 +111,7 @@ class GalleryService implements IGalleryService {
     });
   }
 
+  // Stream of user's drawings from Firestore
   @override
   Stream<List<DrawingModel>> imagesStream() {
     if (_uid == null) return Stream.value([]);
@@ -119,6 +122,7 @@ class GalleryService implements IGalleryService {
         .map((snap) => snap.docs.map((d) => DrawingModel.fromDoc(d)).toList());
   }
 
+  // Delete drawing from Firebase Storage and Firestore document
   @override
   Future<void> deleteImage(String docId, String storagePath) async {
     await _storage.ref(storagePath).delete();

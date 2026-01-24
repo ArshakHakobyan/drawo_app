@@ -8,7 +8,7 @@ import 'package:drawo_app/core/languages/bloc/languages_bloc.dart';
 import 'package:drawo_app/core/network/bloc/network_bloc.dart';
 import 'package:drawo_app/core/service_locator.dart' as service_locator;
 import 'package:drawo_app/presentation/auth/bloc/auth_bloc.dart';
-import 'package:drawo_app/presentation/auth/auth_screen.dart';
+import 'package:drawo_app/presentation/auth/login_screen.dart';
 import 'package:drawo_app/presentation/gallery/gallery_screen.dart';
 
 class DrawingApp extends StatelessWidget {
@@ -97,7 +97,7 @@ class DrawingApp extends StatelessWidget {
                     body: Center(child: CircularProgressIndicator()),
                   );
                 } else {
-                  return const AuthScreen();
+                  return const LoginScreen();
                 }
               },
             ),
