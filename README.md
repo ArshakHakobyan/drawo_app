@@ -21,6 +21,7 @@ lib/
 │   ├── common/                 # Global utilities and Enums
 │   ├── input/                  # Form models (Reactive Forms) for Auth
 │   ├── languages/              # Localization logic & BloC
+│   ├── network/                # Internet connectivity monitoring BloC
 │   ├── routes/                 # AppRouter and navigation constants
 │   ├── style/                  # Theme config, palettes, and text styles
 │   └── service_locator.dart    # Dependency Injection setup (GetIt)
@@ -48,6 +49,7 @@ lib/
 -   **Localization**: Built-in support for dynamic language switching (English/Russian) using `flutter_localizations`.
 -   **Cloud Sync**: Real-time updates and storage using `cloud_firestore` and `firebase_storage`.
 -   **Local Capability**: Usage of `gal` for saving images to the device gallery and `shared_preferences` for local settings.
+-   **Network Monitoring**: Real-time internet connectivity tracking with a global UI notification banner when the device is offline.
 
 ## 🛠️ Technical Stack
 
@@ -56,6 +58,7 @@ lib/
 | **Framework** | Flutter (Dart) |
 | **State Management** | BLoC / Cubit |
 | **Backend** | Firebase Auth, Firestore, Storage |
+| **Network** | Connectivity Plus |
 | **DI** | GetIt |
 | **Input** | Reactive Forms |
 | **Persistence** | Shared Preferences, Gal (Gallery) |

@@ -7,6 +7,7 @@ class CommonHeader extends StatelessWidget {
   final Widget? leading;
   final List<Widget>? actions;
   final double height;
+  final double sideWidth;
 
   const CommonHeader({
     super.key,
@@ -14,6 +15,7 @@ class CommonHeader extends StatelessWidget {
     this.leading,
     this.actions,
     this.height = 102,
+    this.sideWidth = 100,
   });
 
   @override
@@ -31,24 +33,29 @@ class CommonHeader extends StatelessWidget {
               children: [
                 // Leading icon
                 SizedBox(
-                  width: 100,
+                  width: sideWidth,
                   child: leading != null
                       ? Align(alignment: Alignment.centerLeft, child: leading)
                       : const SizedBox.shrink(),
                 ),
                 //Title of the header
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Palette.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Palette.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
 
                 // Actions side
                 SizedBox(
-                  width: 100, // Fixed width for alignment
+                  width: sideWidth, // Fixed width for alignment
                   child: actions != null
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,

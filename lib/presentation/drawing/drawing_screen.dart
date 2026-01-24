@@ -290,8 +290,14 @@ class _DrawingViewState extends State<_DrawingView> {
 
   Widget _buildHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 350; // iPhone SE is 320px wide
+
     return CommonHeader(
       title: widget.drawing != null ? l10n.edit : l10n.newImage,
+      sideWidth: isCompact
+          ? 100
+          : 120, // Give more room if needed or keep balanced
       leading: HeaderIconButton(
         asset: MediaAssets.backIcon,
         color: Palette.white,
@@ -303,7 +309,7 @@ class _DrawingViewState extends State<_DrawingView> {
           color: Palette.white,
           onTap: _shareCanvas,
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: isCompact ? 4 : 8),
         HeaderIconButton(
           asset: MediaAssets.doneIcon,
           color: Palette.white,
@@ -314,12 +320,15 @@ class _DrawingViewState extends State<_DrawingView> {
   }
 
   Widget _buildToolbar(BuildContext context, DrawingState state) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 375; // iPhone SE, 7, 8 are small
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Size Slider on the left
+          // Size Label
           const Text(
             'Size',
             style: TextStyle(
@@ -329,13 +338,17 @@ class _DrawingViewState extends State<_DrawingView> {
             ),
           ),
           const SizedBox(width: 4),
+          // Flexible Slider
           Expanded(
-            flex: 2,
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
-                trackHeight: 10,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
-                overlayShape: const RoundSliderOverlayShape(overlayRadius: 24),
+                trackHeight: isCompact ? 8 : 10,
+                thumbShape: RoundSliderThumbShape(
+                  enabledThumbRadius: isCompact ? 10 : 12,
+                ),
+                overlayShape: RoundSliderOverlayShape(
+                  overlayRadius: isCompact ? 20 : 24,
+                ),
                 activeTrackColor: Palette.primary,
                 inactiveTrackColor: Palette.grey.withValues(alpha: 0.3),
                 thumbColor: Palette.white,
@@ -349,7 +362,7 @@ class _DrawingViewState extends State<_DrawingView> {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: isCompact ? 4 : 8),
           // Actions on the right
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -367,29 +380,29 @@ class _DrawingViewState extends State<_DrawingView> {
                     );
                   },
                 ),
+                SizedBox(width: isCompact ? 4 : 8),
               ],
-              const SizedBox(width: 8),
               ToolbarAction(
                 icon: MediaAssets.downloadIcon,
                 onTap: _saveToGallery,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(icon: MediaAssets.galleryIcon, onTap: _pickImage),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(
                 icon: MediaAssets.panIcon,
                 onTap: () =>
                     context.read<DrawingBloc>().add(const ToggleEraser(false)),
                 isActive: !state.isEraser,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(
                 icon: MediaAssets.eraserIcon,
                 onTap: () =>
                     context.read<DrawingBloc>().add(const ToggleEraser(true)),
                 isActive: state.isEraser,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: isCompact ? 4 : 8),
               ToolbarAction(
                 key: _colorPickerKey,
                 icon: MediaAssets.pickerIcon,

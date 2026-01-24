@@ -198,6 +198,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ReactiveFormConsumer(
                                       builder: (context, form, child) {
                                         return AccentButton(
+                                          width:
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.width -
+                                              40,
                                           label: localeStrings.signup,
                                           onPressed: (form.valid && !isLoading)
                                               ? () {
@@ -222,6 +227,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                     const SizedBox(height: 19),
                                     AccentButton(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       label: localeStrings.login,
                                       onPressed: () {
                                         Navigator.pop(context);
