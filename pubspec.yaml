@@ -63,7 +63,6 @@ dependencies:
   # Dev utils
   gal: 2.3.2
   connectivity_plus: 7.0.0
-  device_preview: ^1.3.1
   flutter_localizations:
     sdk: flutter
   

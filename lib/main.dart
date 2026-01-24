@@ -4,17 +4,13 @@ import 'package:drawo_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:device_preview/device_preview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   service_locator.call();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupLocalNotifications();
-  // runApp(const DrawingApp());
-  runApp(
-    DevicePreview(enabled: true, builder: (context) => const DrawingApp()),
-  );
+  runApp(const DrawingApp());
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
