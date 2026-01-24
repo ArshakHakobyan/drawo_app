@@ -22,7 +22,7 @@ class MainBackground extends StatelessWidget {
         // Dark Overlay for contrast
         Container(
           constraints: const BoxConstraints.expand(),
-          color: Palette.black.withOpacity(0.75),
+          color: Palette.black.withValues(alpha: 0.75),
         ),
         // Pattern Overlay
         Container(

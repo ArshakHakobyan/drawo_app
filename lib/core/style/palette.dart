@@ -13,6 +13,16 @@ class Palette {
   static const Color red = Color(0xFFFF4050);
   static const Color tertiary = Color(0xFFFF4050);
 
+  // UI Specific Colors
+  static const Color background = Color(0xff131313);
+  static const Color surface = Color(0xFF1E1E1E);
+  static const Color accentBlue = Color(0xFF4A90E2);
+  static const Color darkSlate = Color(0xFF2C3E50);
+  static const Color deeperSlate = Color(0xFF16212C);
+  static const Color lightGrey = Color(0xFFE5E5E5);
+  static const Color accentGrey = Color(0xFF6B6B6B);
+  static const Color lightAccentRed = Color(0xFFE74D4D);
+
   // Semantic Aliases
   static const Color error = red;
   static const Color success = Color(0xFF4CAF50);

@@ -1,5 +1,5 @@
 {
-    "appTitle": "Painter App",
+    "appTitle": "Drawing App",
     "loginTitle": "Login",
     "registration": "Registration",
     "login": "Log in",
@@ -27,11 +27,18 @@
     "namerequired": "Name is required.",
     "entervalidemail": "Please enter a valid email.",
     "passwordshouldmatch": "Passwords should match",
-    "mustbeatchars": "Must be at least 6 chars",
+    "mustbeatchars": "Must be at least 8 chars",
+    "noArtworks": "No artworks yet",
+    "savedToGallery": "Saved to Gallery",
+    "savedToGalleryDesc": "Your drawing is now in your photos.",
+    "galleryError": "Failed to save to gallery",
     "imageSaved": "Image Saved",
     "imageSavedDesc": "Your drawing has been successfully saved to Firebase.",
     "imageUpdated": "Image Updated",
     "imageUpdatedDesc": "The artwork has been successfully updated.",
     "imageDeleted": "Image Deleted",
-    "imageDeletedDesc": "The artwork has been removed."
+    "imageDeletedDesc": "The artwork has been removed.",
+    "shareText": "Check out my drawing!",
+    "error": "Error",
+    "required": "Required"
 }

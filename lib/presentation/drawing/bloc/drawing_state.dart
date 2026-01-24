@@ -1,4 +1,4 @@
-part of 'painter_bloc.dart';
+part of 'drawing_bloc.dart';
 
 class DrawnLine extends Equatable {
   final List<Offset> path;
@@ -26,26 +26,37 @@ class DrawnLine extends Equatable {
   }
 }
 
-enum PainterStatus { initial, drawing, saving, saved, deleted, error }
+enum DrawingStatus {
+  initial,
+  drawing,
+  saving,
+  saved,
+  updated,
+  savedToGallery,
+  deleted,
+  error,
+}
 
-class PainterState extends Equatable {
+class DrawingState extends Equatable {
   final List<DrawnLine> lines;
   final DrawnLine? currentLine;
   final Color selectedColor;
   final double strokeWidth;
   final bool isEraser;
   final ui.Image? backgroundImage;
-  final PainterStatus status;
+  final List<Color> availableColors;
+  final DrawingStatus status;
   final String? errorMessage;
 
-  const PainterState({
+  const DrawingState({
     this.lines = const [],
     this.currentLine,
     this.selectedColor = Colors.black,
     this.strokeWidth = 5.0,
     this.isEraser = false,
     this.backgroundImage,
-    this.status = PainterStatus.initial,
+    this.availableColors = const [],
+    this.status = DrawingStatus.initial,
     this.errorMessage,
   });
 
@@ -57,11 +68,12 @@ class PainterState extends Equatable {
     strokeWidth,
     isEraser,
     backgroundImage,
+    availableColors,
     status,
     errorMessage,
   ];
 
-  PainterState copyWith({
+  DrawingState copyWith({
     List<DrawnLine>? lines,
     DrawnLine? currentLine,
     bool clearCurrentLine = false,
@@ -69,16 +81,18 @@ class PainterState extends Equatable {
     double? strokeWidth,
     bool? isEraser,
     ui.Image? backgroundImage,
-    PainterStatus? status,
+    List<Color>? availableColors,
+    DrawingStatus? status,
     String? errorMessage,
   }) {
-    return PainterState(
+    return DrawingState(
       lines: lines ?? this.lines,
       currentLine: clearCurrentLine ? null : (currentLine ?? this.currentLine),
       selectedColor: selectedColor ?? this.selectedColor,
       strokeWidth: strokeWidth ?? this.strokeWidth,
       isEraser: isEraser ?? this.isEraser,
       backgroundImage: backgroundImage ?? this.backgroundImage,
+      availableColors: availableColors ?? this.availableColors,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
     );

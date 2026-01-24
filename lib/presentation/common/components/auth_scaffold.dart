@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:drawo_app/core/resources/media_assets.dart';
+import 'package:drawo_app/core/style/palette.dart';
 
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({super.key});
@@ -19,7 +20,7 @@ class AuthScaffold extends StatelessWidget {
         ),
         Container(
           constraints: const BoxConstraints.expand(),
-          color: const Color(0xff131313).withOpacity(0.75),
+          color: Palette.background.withValues(alpha: 0.75),
         ),
         Container(
           decoration: BoxDecoration(

@@ -1,3 +1,4 @@
+import 'package:drawo_app/core/languages/app_localizations.dart';
 import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/presentation/gallery/bloc/gallery_bloc.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class ArtworksGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Defines grid layout constants
-    const double cardRadius = 22.0;
+    const double cardRadius = 12;
 
     return BlocBuilder<GalleryBloc, GalleryState>(
       builder: (context, state) {
@@ -23,11 +24,12 @@ class ArtworksGrid extends StatelessWidget {
         final artworks = state.images;
 
         if (artworks.isEmpty) {
+          final l10n = AppLocalizations.of(context);
           return Center(
             child: Text(
-              'No artworks yet', // TODO: Add to localization
+              l10n?.noArtworks ?? 'No artworks yet',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Palette.whiter.withOpacity(0.5),
+                color: Palette.whiter.withValues(alpha: 0.5),
                 fontSize: 16,
               ),
             ),
@@ -51,7 +53,7 @@ class ArtworksGrid extends StatelessWidget {
               onTap: () {
                 Navigator.of(
                   context,
-                ).pushNamed(AppRoutes.painter, arguments: artwork);
+                ).pushNamed(AppRoutes.drawing, arguments: artwork);
               },
             );
           },
@@ -80,7 +82,7 @@ class ArtworkCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -92,11 +94,11 @@ class ArtworkCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
-          splashColor: Palette.white.withOpacity(0.2),
+          splashColor: Palette.white.withValues(alpha: 0.2),
           child: Image.network(
             imageUrl,
             fit: BoxFit.cover,
-            errorBuilder: (context, _, __) {
+            errorBuilder: (context, _, _) {
               return const Center(
                 child: Icon(Icons.broken_image, color: Palette.grey),
               );

@@ -21,7 +21,9 @@ class HeaderIconButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(50),
-        overlayColor: WidgetStatePropertyAll(Palette.white.withOpacity(0.15)),
+        overlayColor: WidgetStatePropertyAll(
+          Palette.white.withValues(alpha: 0.15),
+        ),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(10),

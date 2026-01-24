@@ -5,7 +5,6 @@ class GlassContainer extends StatelessWidget {
   final double height;
   final Widget? child;
   final BorderRadius? borderRadius;
-
   const GlassContainer({
     super.key,
     this.height = 102,
@@ -36,7 +35,6 @@ class GlassContainer extends StatelessWidget {
         spreadRadius: -64,
       ),
     ];
-
     return ClipRRect(
       borderRadius: effectiveRadius,
       child: Stack(
@@ -60,7 +58,7 @@ class GlassContainer extends StatelessWidget {
             ),
           ),
           // Content
-          Container(width: double.infinity, height: height, child: child),
+          SizedBox(width: double.infinity, height: height, child: child),
         ],
       ),
     );

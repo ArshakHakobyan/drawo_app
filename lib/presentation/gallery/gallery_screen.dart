@@ -1,6 +1,4 @@
-import 'package:drawo_app/core/resources/media_assets.dart';
 import 'package:drawo_app/core/routes/app_router.dart';
-import 'package:drawo_app/core/style/palette.dart';
 import 'package:drawo_app/presentation/gallery/bloc/gallery_bloc.dart';
 import 'package:drawo_app/presentation/gallery/widgets/main_background.dart';
 import 'package:drawo_app/presentation/gallery/widgets/artworks_grid.dart';
@@ -41,8 +39,6 @@ class _GalleryDashboardLayout extends StatelessWidget {
               children: [
                 const DashboardHeader(),
                 const Expanded(child: ArtworksGrid()),
-
-                // Prominent Create Action for Empty State
                 BlocBuilder<GalleryBloc, GalleryState>(
                   builder: (context, state) {
                     final shouldShowBigCta =
@@ -53,9 +49,10 @@ class _GalleryDashboardLayout extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 40),
                         child: AccentButton(
+                          width: MediaQuery.of(context).size.width - 42,
                           label: l10n.create,
                           onPressed: () {
-                            Navigator.of(context).pushNamed(AppRoutes.painter);
+                            Navigator.of(context).pushNamed(AppRoutes.drawing);
                           },
                           radius: 8,
                         ),

@@ -110,6 +110,11 @@ class AppLocalizations {
   String get imageUpdatedDesc => translate('imageUpdatedDesc');
   String get imageDeleted => translate('imageDeleted');
   String get imageDeletedDesc => translate('imageDeletedDesc');
+  String get noArtworks => translate('noArtworks');
+  String get savedToGallery => translate('savedToGallery');
+  String get savedToGalleryDesc => translate('savedToGalleryDesc');
+  String get galleryError => translate('galleryError');
+  String get shareText => translate('shareText');
 }
 
 class _AppLocalizationsDelegate

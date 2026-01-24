@@ -7,7 +7,7 @@ import 'package:drawo_app/data/services/auth_service.dart';
 import 'package:drawo_app/data/services/gallery_service.dart';
 import 'package:drawo_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:drawo_app/presentation/gallery/bloc/gallery_bloc.dart';
-import 'package:drawo_app/presentation/painter/bloc/painter_bloc.dart';
+import 'package:drawo_app/presentation/drawing/bloc/drawing_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 final sl = GetIt.instance;
@@ -29,5 +29,5 @@ void call() {
 
   sl.registerFactory<AuthBloc>(() => AuthBloc(authRepository: sl()));
   sl.registerFactory<GalleryBloc>(() => GalleryBloc(imageRepository: sl()));
-  sl.registerFactory<PainterBloc>(() => PainterBloc(imageRepository: sl()));
+  sl.registerFactory<DrawingBloc>(() => DrawingBloc(imageRepository: sl()));
 }

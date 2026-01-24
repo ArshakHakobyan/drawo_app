@@ -27,7 +27,6 @@ class DrawingApp extends StatelessWidget {
         builder: (context, langState) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            useInheritedMediaQuery: true,
             title: 'Drawing App',
             theme: ThemeConfig.lightTheme,
             darkTheme: ThemeConfig.darkTheme,

@@ -1,3 +1,4 @@
+import 'package:drawo_app/core/languages/bloc/languages_bloc.dart';
 import 'package:drawo_app/presentation/auth/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               msg: state.error.toMessage(context),
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
-              backgroundColor: Palette.red.withOpacity(0.8),
+              backgroundColor: Palette.red.withValues(alpha: 0.8),
               textColor: Palette.white,
               fontSize: 14.0,
             );
@@ -107,6 +108,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     GlassTextInput(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       formControl: _loginForm.emailControl,
                                       label: localeStrings.email,
                                       hint: localeStrings.enterEmail,
@@ -120,9 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     const SizedBox(height: 20),
                                     GlassTextInput(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       context: context,
                                       formControl: _loginForm.passwordControl,
-                                      label: localeStrings.confirmPassword,
+                                      label: localeStrings.password,
                                       hint: localeStrings.enterPassword,
                                       requiredMessage:
                                           localeStrings.passwordrequired,
@@ -139,6 +146,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Column(
                                   children: [
                                     AccentButton(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       label: localeStrings.login,
                                       onPressed: isLoading
                                           ? null
@@ -165,6 +175,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     const SizedBox(height: 19),
                                     AccentButton(
+                                      width:
+                                          MediaQuery.of(context).size.width -
+                                          40,
                                       label: localeStrings.registration,
                                       onPressed: () {
                                         Navigator.push(
@@ -184,6 +197,43 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(height: 40),
                               ],
                             ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 10,
+                right: 20,
+                child: BlocBuilder<LanguageBloc, LanguagesState>(
+                  builder: (context, langState) {
+                    final isEn = langState.locale.languageCode == 'en';
+                    return GestureDetector(
+                      onTap: () {
+                        context.read<LanguageBloc>().add(
+                          ChangeLanguage(locale: Locale(isEn ? 'ru' : 'en')),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Palette.black.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Palette.whiter.withValues(alpha: 0.2),
+                          ),
+                        ),
+                        child: Text(
+                          isEn ? 'EN' : 'RU',
+                          style: const TextStyle(
+                            color: Palette.whiter,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),

@@ -49,9 +49,10 @@ class MustMatchValidator extends Validator<dynamic> {
     final formControl = control.control(controlName);
     final matchingFormControl = control.control(matchingControlName);
 
-    if (formControl.value != matchingFormControl.value &&
-        matchingFormControl.touched) {
-      matchingFormControl.setErrors(error, markAsDirty: markAsDirty);
+    if (formControl.value != matchingFormControl.value) {
+      if (matchingFormControl.touched || formControl.touched) {
+        matchingFormControl.setErrors(error, markAsDirty: markAsDirty);
+      }
     } else {
       matchingFormControl.removeError(ValidationMessage.mustMatch);
     }

@@ -19,6 +19,7 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     on<DeleteImage>(_onDeleteImage);
   }
 
+  // Subscribe to images from Firestore
   void _onLoadGallery(LoadGallery event, Emitter<GalleryState> emit) {
     emit(state.copyWith(status: GalleryStatus.loading));
     _imagesSubscription?.cancel();
@@ -30,10 +31,12 @@ class GalleryBloc extends Bloc<GalleryEvent, GalleryState> {
     );
   }
 
+  // Update state when images change
   void _onGalleryUpdated(GalleryUpdated event, Emitter<GalleryState> emit) {
     emit(state.copyWith(status: GalleryStatus.loaded, images: event.images));
   }
 
+  // Delete drawing from DB and storage
   Future<void> _onDeleteImage(
     DeleteImage event,
     Emitter<GalleryState> emit,
