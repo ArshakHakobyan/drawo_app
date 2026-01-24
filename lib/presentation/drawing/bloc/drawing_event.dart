@@ -76,7 +76,12 @@ class SaveToGalleryRequested extends DrawingEvent {
 class ShareImageRequested extends DrawingEvent {
   final Uint8List imageBytes;
   final String shareText;
-  const ShareImageRequested(this.imageBytes, this.shareText);
+  final Rect? sharePositionOrigin;
+  const ShareImageRequested(
+    this.imageBytes,
+    this.shareText, {
+    this.sharePositionOrigin,
+  });
 }
 
 class DeleteImageRequested extends DrawingEvent {

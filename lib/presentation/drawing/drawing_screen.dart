@@ -41,6 +41,7 @@ class _DrawingView extends StatefulWidget {
 class _DrawingViewState extends State<_DrawingView> {
   final GlobalKey _canvasKey = GlobalKey();
   final GlobalKey _colorPickerKey = GlobalKey();
+  final GlobalKey _shareButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -103,10 +104,19 @@ class _DrawingViewState extends State<_DrawingView> {
       if (byteData != null && mounted) {
         final bytes = byteData.buffer.asUint8List();
         final l10n = AppLocalizations.of(context);
+
+        // Calculate share button position for iPad support
+        final RenderBox? box =
+            _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+        final Rect? sharePositionOrigin = box != null
+            ? box.localToGlobal(Offset.zero) & box.size
+            : null;
+
         context.read<DrawingBloc>().add(
           ShareImageRequested(
             bytes,
             l10n?.shareText ?? 'Check out my drawing!',
+            sharePositionOrigin: sharePositionOrigin,
           ),
         );
       }
@@ -146,16 +156,21 @@ class _DrawingViewState extends State<_DrawingView> {
         button?.localToGlobal(Offset.zero) ?? Offset.zero;
     final Size buttonSize = button?.size ?? Size.zero;
 
-    // Assuming a standard width and some right margin
+    // Calculate popover position
+    final screenWidth = MediaQuery.of(context).size.width;
     const double dialogWidth = 300;
-    // Calculate left position to align the arrow nicely with the button center
-    // Arrow is roughly at right: 28 inside the dialog.
-    // Dialog content is constrained.
-    // Let's try to position the dialog such that its top-right area is near the button.
+    const double arrowCenterFromPopoverRight = 31.0;
+
+    final buttonCenterX = buttonPosition.dx + (buttonSize.width / 2);
+    final buttonCenterFromRight = screenWidth - buttonCenterX;
+
+    final popoverRight = (buttonCenterFromRight - arrowCenterFromPopoverRight)
+        .clamp(10.0, screenWidth - dialogWidth - 10);
+    final popoverTop = buttonPosition.dy + buttonSize.height - 200;
 
     showDialog(
       context: context,
-      barrierColor: Colors.transparent, // No dark overlay
+      barrierColor: Colors.transparent,
       builder: (dialogContext) {
         return Stack(
           children: [
@@ -166,11 +181,8 @@ class _DrawingViewState extends State<_DrawingView> {
               child: const SizedBox.expand(),
             ),
             Positioned(
-              top: buttonPosition.dy - buttonSize.height,
-              right:
-                  MediaQuery.of(context).size.width -
-                  (buttonPosition.dx + buttonSize.width) -
-                  10, // Align right edge relative to button
+              top: popoverTop,
+              right: popoverRight,
               child: SizedBox(
                 width: dialogWidth,
                 child: Material(
@@ -305,6 +317,7 @@ class _DrawingViewState extends State<_DrawingView> {
       ),
       actions: [
         HeaderIconButton(
+          key: _shareButtonKey,
           icon: Icons.share,
           color: Palette.white,
           onTap: _shareCanvas,

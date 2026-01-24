@@ -225,17 +225,19 @@ class DrawingBloc extends Bloc<DrawingEvent, DrawingState> {
     Emitter<DrawingState> emit,
   ) async {
     try {
-      final params = ShareParams(
-        files: [
-          XFile.fromData(
-            event.imageBytes,
-            name: 'drawing.png',
-            mimeType: 'image/png',
-          ),
-        ],
-        text: event.shareText,
+      final file = XFile.fromData(
+        event.imageBytes,
+        name: 'drawing.png',
+        mimeType: 'image/png',
       );
-      await SharePlus.instance.share(params);
+
+      await SharePlus.instance.share(
+        ShareParams(
+          text: event.shareText,
+          files: [file],
+          sharePositionOrigin: event.sharePositionOrigin,
+        ),
+      );
     } catch (e) {
       debugPrint('Error sharing image: $e');
     }
