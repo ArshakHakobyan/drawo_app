@@ -9,7 +9,6 @@ class MainBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Base Image Layer
         Container(
           constraints: const BoxConstraints.expand(),
           decoration: const BoxDecoration(
@@ -19,18 +18,16 @@ class MainBackground extends StatelessWidget {
             ),
           ),
         ),
-        // Dark Overlay for contrast
         Container(
           constraints: const BoxConstraints.expand(),
           color: Palette.black.withValues(alpha: 0.75),
         ),
-        // Pattern Overlay
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage(MediaAssets.pattern),
               fit: BoxFit.cover,
-              opacity: 0.5, // Slight transparency for pattern
+              opacity: 0.5,
             ),
           ),
         ),
