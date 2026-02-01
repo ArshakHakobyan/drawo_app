@@ -24,7 +24,7 @@ class DashboardHeader extends StatelessWidget {
 
         return CommonHeader(
           title: l10n.gallery,
-          subtitle: userName != null ? "Hi, $userName" : null,
+          subtitle: userName != null ? l10n.hi(userName) : null,
           leading: HeaderIconButton(
             asset: MediaAssets.exitIcon,
             color: Palette.red,

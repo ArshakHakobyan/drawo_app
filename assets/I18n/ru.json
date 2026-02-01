@@ -3,6 +3,7 @@
     "loginTitle": "Вход",
     "registration": "Регистрация",
     "login": "Войти",
+    "hi": "Привет, {name}",
     "name": "Имя",
     "email": "e-mail",
     "password": "Пароль",
