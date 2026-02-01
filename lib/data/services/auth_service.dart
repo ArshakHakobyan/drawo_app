@@ -48,7 +48,11 @@ class AuthService implements IAuthService {
       email: email.trim(),
       password: password.trim(),
     );
-    await credential.user?.updateDisplayName(name.trim());
+    final user = credential.user;
+    if (user != null) {
+      await user.updateDisplayName(name.trim());
+      await user.reload();
+    }
     return credential;
   }
 
