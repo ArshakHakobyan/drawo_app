@@ -4,6 +4,7 @@ import 'package:drawo_app/presentation/common/components/glass_container.dart';
 
 class CommonHeader extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final Widget? leading;
   final List<Widget>? actions;
   final double height;
@@ -12,6 +13,7 @@ class CommonHeader extends StatelessWidget {
   const CommonHeader({
     super.key,
     required this.title,
+    this.subtitle,
     this.leading,
     this.actions,
     this.height = 102,
@@ -40,16 +42,33 @@ class CommonHeader extends StatelessWidget {
                 ),
                 //Title of the header
                 Expanded(
-                  child: Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Palette.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Palette.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (subtitle != null)
+                        Text(
+                          subtitle!,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Palette.whiter.withValues(alpha: 0.7),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
 
