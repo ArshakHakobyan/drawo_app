@@ -1,1 +1,22 @@
-{"flutter":{"platforms":{"ios":{"default":{"projectId":"drawing-app-e7cd3","appId":"1:146064547814:ios:e44c4b7f7c4b2d277dc027","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"drawing-app-e7cd3","configurations":{"ios":"1:146064547814:ios:e44c4b7f7c4b2d277dc027"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "ios": {
+                "default": {
+                    "projectId": "drawing-app-e7cd3",
+                    "appId": "1:146064547814:ios:e44c4b7f7c4b2d277dc027",
+                    "uploadDebugSymbols": false,
+                    "fileOutput": "ios/Runner/GoogleService-Info.plist"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "drawing-app-e7cd3",
+                    "configurations": {
+                        "ios": "1:146064547814:ios:e44c4b7f7c4b2d277dc027"
+                    }
+                }
+            }
+        }
+    }
+}
