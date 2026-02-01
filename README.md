@@ -49,16 +49,16 @@ lib/
 -   **Localization**: Built-in support for dynamic language switching (English/Russian) using `flutter_localizations`.
 -   **Cloud Sync**: Real-time updates and storage using `cloud_firestore` and `firebase_storage`.
 -   **Local Capability**: Usage of `gal` for saving images to the device gallery and `shared_preferences` for local settings.
--   **Network Monitoring**: Real-time internet connectivity tracking with a global UI notification banner when the device is offline.
+*   **Network Monitoring**: Real-time internet connectivity tracking with a global UI notification banner when the device is offline. (Uses `internet_connection_checker_plus` for robust checks).
 
 ## 🛠️ Technical Stack
 
 | Category | Technology |
 |----------|------------|
-| **Framework** | Flutter (Dart) |
+| **Framework** | Flutter (Dart) - **iOS Only** |
 | **State Management** | BLoC / Cubit |
 | **Backend** | Firebase Auth, Firestore, Storage |
-| **Network** | Connectivity Plus |
+| **Network** | Internet Connection Checker Plus |
 | **DI** | GetIt |
 | **Input** | Reactive Forms |
 | **Persistence** | Shared Preferences, Gal (Gallery) |
