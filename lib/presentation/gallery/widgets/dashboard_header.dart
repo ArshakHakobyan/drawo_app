@@ -17,11 +17,14 @@ class DashboardHeader extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<GalleryBloc, GalleryState>(
-      builder: (context, state) {
-        final hasImages = state.images.isNotEmpty;
+      builder: (context, galleryState) {
+        final authState = context.watch<AuthBloc>().state;
+        final hasImages = galleryState.images.isNotEmpty;
+        final userName = authState.user?.displayName;
 
         return CommonHeader(
           title: l10n.gallery,
+          subtitle: userName != null ? l10n.hi(userName) : null,
           leading: HeaderIconButton(
             asset: MediaAssets.exitIcon,
             color: Palette.red,

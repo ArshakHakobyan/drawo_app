@@ -79,9 +79,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(status: AuthStatus.loading));
     try {
       await _authRepository.register(
+        name: event.name,
         email: event.email,
         password: event.password,
       );
+      // Manually refresh user object because Firebase listener might have fired
+      // before updateDisplayName/reload completed.
+      final user = _authRepository.currentUser;
+      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
     } on FirebaseAuthException catch (e) {
       AuthError error = AuthError.unknown;
       if (e.code == 'email-already-in-use') {

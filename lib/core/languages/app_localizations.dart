@@ -115,6 +115,8 @@ class AppLocalizations {
   String get savedToGalleryDesc => translate('savedToGalleryDesc');
   String get galleryError => translate('galleryError');
   String get shareText => translate('shareText');
+
+  String hi(String name) => translate('hi').replaceFirst('{name}', name);
 }
 
 class _AppLocalizationsDelegate

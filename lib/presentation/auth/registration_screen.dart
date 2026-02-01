@@ -208,12 +208,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                               ? () {
                                                   context.read<AuthBloc>().add(
                                                     AuthSignUpRequested(
-                                                      _registrationForm
+                                                      name: _registrationForm
+                                                          .nameControl
+                                                          .value!,
+                                                      email: _registrationForm
                                                           .emailControl
                                                           .value!,
-                                                      _registrationForm
-                                                          .passwordControl
-                                                          .value!,
+                                                      password:
+                                                          _registrationForm
+                                                              .passwordControl
+                                                              .value!,
                                                     ),
                                                   );
                                                 }

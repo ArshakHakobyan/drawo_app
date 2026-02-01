@@ -3,6 +3,7 @@
     "loginTitle": "Login",
     "registration": "Registration",
     "login": "Log in",
+    "hi": "Hi, {name}",
     "name": "Name",
     "email": "e-mail",
     "password": "Password",
