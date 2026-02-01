@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:drawo_app/core/resources/media_assets.dart';
 import 'package:drawo_app/core/style/palette.dart';
@@ -207,6 +208,7 @@ class _DrawingViewState extends State<_DrawingView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DrawingBloc, DrawingState>(
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         final l10n = AppLocalizations.of(context);
         if (state.status == DrawingStatus.saved) {
@@ -224,10 +226,9 @@ class _DrawingViewState extends State<_DrawingView> {
           );
           Navigator.pop(context);
         } else if (state.status == DrawingStatus.savedToGallery) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n?.savedToGallery ?? 'Saved to gallery!'),
-            ),
+          showNotification(
+            l10n?.savedToGallery ?? 'Saved to Gallery',
+            l10n?.savedToGalleryDesc ?? 'Your drawing is now in your photos.',
           );
         } else if (state.status == DrawingStatus.deleted) {
           showNotification(
@@ -236,8 +237,13 @@ class _DrawingViewState extends State<_DrawingView> {
           );
           Navigator.pop(context);
         } else if (state.status == DrawingStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'An error occurred')),
+          Fluttertoast.showToast(
+            msg: state.errorMessage ?? 'An error occurred',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Palette.red.withValues(alpha: 0.8),
+            textColor: Palette.white,
+            fontSize: 14.0,
           );
         }
       },
