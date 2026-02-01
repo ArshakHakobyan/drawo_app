@@ -16,8 +16,8 @@ class CommonHeader extends StatelessWidget {
     this.subtitle,
     this.leading,
     this.actions,
-    this.height = 102,
-    this.sideWidth = 100,
+    this.height = 110,
+    this.sideWidth = 70,
   });
 
   @override
@@ -44,6 +44,7 @@ class CommonHeader extends StatelessWidget {
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         title,
@@ -78,7 +79,9 @@ class CommonHeader extends StatelessWidget {
                   child: actions != null
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: actions!,
+                          children: [
+                            ...actions!.map((a) => Flexible(child: a)),
+                          ],
                         )
                       : const SizedBox.shrink(),
                 ),

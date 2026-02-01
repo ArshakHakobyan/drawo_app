@@ -309,13 +309,11 @@ class _DrawingViewState extends State<_DrawingView> {
   Widget _buildHeader(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
-    final isCompact = screenWidth < 350; // iPhone SE is 320px wide
+    final isCompact = screenWidth < 360;
 
     return CommonHeader(
       title: widget.drawing != null ? l10n.edit : l10n.newImage,
-      sideWidth: isCompact
-          ? 100
-          : 120, // Give more room if needed or keep balanced
+      sideWidth: isCompact ? 80 : 100,
       leading: HeaderIconButton(
         asset: MediaAssets.backIcon,
         color: Palette.white,

@@ -25,6 +25,7 @@ class DashboardHeader extends StatelessWidget {
         return CommonHeader(
           title: l10n.gallery,
           subtitle: userName != null ? l10n.hi(userName) : null,
+          sideWidth: 60, // Reduced from default 70 to give name even more space
           leading: HeaderIconButton(
             asset: MediaAssets.exitIcon,
             color: Palette.red,
