@@ -8,6 +8,7 @@ abstract class IAuthService {
     required String password,
   });
   Future<UserCredential> register({
+    required String name,
     required String email,
     required String password,
   });
@@ -39,12 +40,17 @@ class AuthService implements IAuthService {
   // Register new user with email and password
   @override
   Future<UserCredential> register({
+    required String name,
     required String email,
     required String password,
-  }) => _auth.createUserWithEmailAndPassword(
-    email: email.trim(),
-    password: password.trim(),
-  );
+  }) async {
+    final credential = await _auth.createUserWithEmailAndPassword(
+      email: email.trim(),
+      password: password.trim(),
+    );
+    await credential.user?.updateDisplayName(name.trim());
+    return credential;
+  }
 
   // Sign out currently logged in user
   @override

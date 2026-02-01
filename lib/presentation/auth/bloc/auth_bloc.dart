@@ -79,6 +79,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(status: AuthStatus.loading));
     try {
       await _authRepository.register(
+        name: event.name,
         email: event.email,
         password: event.password,
       );
