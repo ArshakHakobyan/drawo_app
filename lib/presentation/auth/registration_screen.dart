@@ -34,6 +34,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
           if (state.status == AuthStatus.error) {
             Fluttertoast.showToast(
