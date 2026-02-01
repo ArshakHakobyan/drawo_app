@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:equatable/equatable.dart';
 
 part 'network_event.dart';
 part 'network_state.dart';
 
 class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
-  final Connectivity _connectivity = Connectivity();
+  final InternetConnection _internetConnection = InternetConnection();
   StreamSubscription? _subscription;
 
   NetworkBloc() : super(const NetworkState()) {
@@ -20,18 +20,11 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
     _subscription?.cancel();
 
     // Check initial connectivity
-    final results = await _connectivity.checkConnectivity();
-    final isInitialConnected = results.any(
-      (result) => result != ConnectivityResult.none,
-    );
+    final isInitialConnected = await _internetConnection.hasInternetAccess;
     add(NetworkNotify(isConnected: isInitialConnected));
 
-    _subscription = _connectivity.onConnectivityChanged.listen((
-      List<ConnectivityResult> results,
-    ) {
-      final isConnected = results.any(
-        (result) => result != ConnectivityResult.none,
-      );
+    _subscription = _internetConnection.onStatusChange.listen((status) {
+      final isConnected = status == InternetStatus.connected;
       add(NetworkNotify(isConnected: isConnected));
     });
   }
