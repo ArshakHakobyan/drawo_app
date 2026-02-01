@@ -214,9 +214,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                                       email: _registrationForm
                                                           .emailControl
                                                           .value!,
-                                                      password: _registrationForm
-                                                          .passwordControl
-                                                          .value!,
+                                                      password:
+                                                          _registrationForm
+                                                              .passwordControl
+                                                              .value!,
                                                     ),
                                                   );
                                                 }
